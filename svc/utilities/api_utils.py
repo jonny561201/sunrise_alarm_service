@@ -28,3 +28,7 @@ def set_light_groups(api_key, group_id, state, brightness=None):
         request['bri'] = brightness
 
     requests.put(url, data=json.dumps(request))
+
+
+def get_preferences_by_user(user_id):
+    pass
