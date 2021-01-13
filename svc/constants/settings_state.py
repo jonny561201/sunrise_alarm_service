@@ -26,6 +26,10 @@ class Settings:
     def user_id(self):
         return self.settings.get('UserId') if self.dev_mode else os.environ.get('USER_ID')
 
+    @property
+    def hub_base_url(self):
+        return os.environ.get('HUB_BASE_URL')
+
     @staticmethod
     def get_instance():
         if Settings.__instance is None:
