@@ -1,0 +1,13 @@
+[Unit]
+Description=Home Automation Sunrise Alarm Service
+After=network.target
+
+[Service]
+EnvironmentFile=/home/pi/sunrise_alarm_service/serviceEnvVariables
+ExecStart=/usr/bin/python3 -u app.py
+WorkingDirectory=/home/pi/sunrise_alarm_service
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
