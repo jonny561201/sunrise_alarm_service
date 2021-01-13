@@ -4,7 +4,8 @@ from mock import patch, ANY
 from requests import ReadTimeout, Response
 
 from svc.constants.home_automation import Automation
-from svc.utilities.api_utils import set_light_groups, get_light_api_key
+from svc.constants.settings_state import Settings
+from svc.utilities.api_utils import set_light_groups, get_light_api_key, get_preferences_by_user
 
 
 @patch('svc.utilities.api_utils.requests')
@@ -14,6 +15,7 @@ class TestLightApiRequests:
     BASE_URL = 'http://192.168.1.142:80/api'
     API_KEY = 'fake api key'
     LIGHT_API = None
+    USER_ID = 'def456'
 
     def test_get_light_api_key__should_call_requests_with_url(self, mock_requests):
         get_light_api_key(self.USERNAME, self.PASSWORD)
@@ -79,6 +81,13 @@ class TestLightApiRequests:
 
         expected_request = json.dumps({'on': True, 'bri': brightness})
         mock_requests.put.assert_called_with(ANY, data=expected_request)
+
+    def test_get_preferences_by_user__should_make_rest_call_using_url(self, mock_requests):
+        settings = Settings.get_instance()
+        settings.settings = {'HubBaseUrl': self.BASE_URL}
+        get_preferences_by_user(self.USER_ID)
+
+        mock_requests.get.assert_called_with(f'{self.BASE_URL}/userId/{self.USER_ID}/preferences/update')
 
     @staticmethod
     def __create_response(status=200, data=[]):

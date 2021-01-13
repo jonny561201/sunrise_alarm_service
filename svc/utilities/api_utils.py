@@ -4,6 +4,7 @@ import json
 import requests
 
 from svc.constants.home_automation import Automation
+from svc.constants.settings_state import Settings
 
 LIGHT_BASE_URL = 'http://192.168.1.142:80/api'
 
@@ -31,4 +32,5 @@ def set_light_groups(api_key, group_id, state, brightness=None):
 
 
 def get_preferences_by_user(user_id):
-    pass
+    base_url = Settings.get_instance().hub_base_url
+    requests.get(f'{base_url}/userId/{user_id}/preferences/update')
