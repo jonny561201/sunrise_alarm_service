@@ -28,7 +28,7 @@ class Settings:
 
     @property
     def hub_base_url(self):
-        return os.environ.get('HUB_BASE_URL')
+        return self.settings.get('HubBaseUrl') if self.dev_mode else os.environ.get('HUB_BASE_URL')
 
     @staticmethod
     def get_instance():

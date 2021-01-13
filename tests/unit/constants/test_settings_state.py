@@ -56,3 +56,9 @@ class TestState:
         self.SETTINGS.dev_mode = True
         self.SETTINGS.settings = {'UserId': user_id}
         assert self.SETTINGS.user_id == user_id
+
+    def test_hub_base_url__should_pull_from_dictionary_if_dev_mode(self):
+        base_url = 'http://www.other_user_id.com'
+        self.SETTINGS.dev_mode = True
+        self.SETTINGS.settings = {'HubBaseUrl': base_url}
+        assert self.SETTINGS.hub_base_url == base_url
