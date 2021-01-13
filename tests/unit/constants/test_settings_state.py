@@ -6,13 +6,6 @@ from svc.constants.settings_state import Settings
 class TestState:
     SETTINGS = None
     USER_ID = 'sdf234'
-    DB_PORT = '5231'
-    DB_USER = 'test_user'
-    DB_PASS = 'test_pass'
-    DB_NAME = 'fake_name'
-    EMAIL_APP_ID = 'abc123'
-    WEATHER_APP_ID = '345def'
-    JWT_SECRET = 'FakeSecret'
     LIGHT_API_USER = 'lightUser'
     LIGHT_API_PASSWORD = 'lightPass'
 
@@ -28,12 +21,15 @@ class TestState:
         os.environ.pop('LIGHT_API_PASSWORD')
 
     def test_light_api_user__should_return_env_var_value(self):
+        self.SETTINGS.dev_mode = False
         assert self.SETTINGS.light_api_user == self.LIGHT_API_USER
 
     def test_light_api_password__should_return_env_var_value(self):
+        self.SETTINGS.dev_mode = False
         assert self.SETTINGS.light_api_password == self.LIGHT_API_PASSWORD
 
     def test_user_id__should_return_env_var_value(self):
+        self.SETTINGS.dev_mode = False
         assert self.SETTINGS.user_id == self.USER_ID
 
     def test_light_api_user__should_pull_from_dictionary_if_dev_mode(self):
