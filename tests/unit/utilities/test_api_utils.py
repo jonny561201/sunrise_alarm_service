@@ -89,8 +89,16 @@ class TestLightApiRequests:
 
         mock_requests.get.assert_called_with(f'{self.BASE_URL}/userId/{self.USER_ID}/preferences/update')
 
+    def test_get_preferences_by_user__should_return_only_light_alarm_values(self, mock_requests):
+        alarm_info = {'alarm_time': '00:00:00T00:00:01'}
+        response = {'city': 'Berlin', 'light_alarm': alarm_info}
+        mock_requests.get.return_value = self.__create_response(status=200, data=response)
+        actual = get_preferences_by_user(self.USER_ID)
+
+        assert actual == alarm_info
+
     @staticmethod
-    def __create_response(status=200, data=[]):
+    def __create_response(status=200, data=None):
         response = Response()
         response.status_code = status
         response._content = json.dumps(data).encode('UTF-8')
