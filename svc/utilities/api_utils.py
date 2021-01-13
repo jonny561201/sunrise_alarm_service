@@ -31,7 +31,7 @@ def set_light_groups(api_key, group_id, state, brightness=None):
     requests.put(url, data=json.dumps(request))
 
 
-def get_preferences_by_user(user_id):
+def get_light_preferences_by_user(user_id):
     base_url = Settings.get_instance().hub_base_url
     response = requests.get(f'{base_url}/userId/{user_id}/preferences/update')
-    return response.json()['light_alarm']
+    return response.json().get('light_alarm')
