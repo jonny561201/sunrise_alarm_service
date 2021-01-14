@@ -51,7 +51,7 @@ class TestLightState:
 
         assert actual is not None
 
-    @mock.patch('svc.constants.lights_state.LightAlarm')
+    @mock.patch('svc.constants.lights_state.LightAlarmState')
     def test_add_replace_light_alarm__should_create_the_light_thread(self, mock_light, mock_api, mock_thread):
         alarm = LightAlarmState(self.GROUP_ID, self.TIME, self.DAYS)
         mock_light.return_value = alarm
