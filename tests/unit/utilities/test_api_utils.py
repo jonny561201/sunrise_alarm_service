@@ -87,7 +87,7 @@ class TestLightApiRequests:
         settings.settings = {'HubBaseUrl': self.BASE_URL}
         get_light_preferences_by_user(self.USER_ID)
 
-        mock_requests.get.assert_called_with(f'{self.BASE_URL}/userId/{self.USER_ID}/preferences/update', timeout=5)
+        mock_requests.get.assert_called_with(f'{self.BASE_URL}/userId/{self.USER_ID}/preferences', timeout=5)
 
     def test_get_light_preferences_by_user__should_return_only_light_alarm_values(self, mock_requests):
         alarm_info = {'alarm_time': '00:00:00T00:00:01'}
