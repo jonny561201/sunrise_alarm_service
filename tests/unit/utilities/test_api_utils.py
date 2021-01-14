@@ -1,4 +1,5 @@
 import json
+from datetime import time
 
 from mock import patch, ANY
 from requests import ReadTimeout, Response
@@ -90,12 +91,20 @@ class TestLightApiRequests:
         mock_requests.get.assert_called_with(f'{self.BASE_URL}/userId/{self.USER_ID}/preferences', timeout=5)
 
     def test_get_light_preferences_by_user__should_return_only_light_alarm_values(self, mock_requests):
-        alarm_info = {'alarm_time': '00:00:00T00:00:01'}
+        alarm_info = {'alarm_light_group': '1', 'alarm_time': None}
         response = {'city': 'Berlin', 'light_alarm': alarm_info}
         mock_requests.get.return_value = self.__create_response(status=200, data=response)
         actual = get_light_preferences_by_user(self.USER_ID)
 
         assert actual == alarm_info
+
+    def test_get_light_preferences_by_user__should_convert_alarm_time_to_time_object(self, mock_requests):
+        alarm_info = {'alarm_light_group': '1', 'alarm_time': '00:00:01'}
+        response = {'city': 'Berlin', 'light_alarm': alarm_info}
+        mock_requests.get.return_value = self.__create_response(status=200, data=response)
+        actual = get_light_preferences_by_user(self.USER_ID)
+
+        assert actual['alarm_time'] == time(hour=0, minute=0, second=1)
 
     def test_get_light_preferences_by_user__should_return_none_when_alarm_is_not_present(self, mock_requests):
         response = {'city': 'Berlin'}
