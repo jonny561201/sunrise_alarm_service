@@ -4,7 +4,7 @@ from threading import Event
 import mock
 
 from svc.constants.home_automation import Automation
-from svc.constants.lights_state import LightState, LightAlarm
+from svc.constants.lights_state import LightState, LightAlarmState
 from svc.constants.settings_state import Settings
 
 
@@ -23,7 +23,7 @@ class TestLightState:
 
     def test_add_replace_light_alarm__should_cancel_existing_alarm(self, mock_api, mock_thread):
         test_event = mock.create_autospec(Event)
-        existing_alarm = LightAlarm(self.GROUP_ID, self.TIME, self.DAYS)
+        existing_alarm = LightAlarmState(self.GROUP_ID, self.TIME, self.DAYS)
         existing_alarm.STOP_EVENT = test_event
         self.STATE.LIGHT_ALARMS.append(existing_alarm)
         self.STATE.add_replace_light_alarm(self.GROUP_ID, self.TIME, self.DAYS)
@@ -32,7 +32,7 @@ class TestLightState:
         test_event.set.assert_called()
 
     def test_add_replace_light_alarm__should_create_a_new_alarm(self, mock_api, mock_thread):
-        existing_alarm = LightAlarm(self.GROUP_ID, self.TIME, self.DAYS)
+        existing_alarm = LightAlarmState(self.GROUP_ID, self.TIME, self.DAYS)
         existing_alarm.STOP_EVENT = mock.create_autospec(Event)
         self.STATE.LIGHT_ALARMS.append(existing_alarm)
         self.STATE.add_replace_light_alarm(self.GROUP_ID, self.TIME, self.DAYS)
@@ -41,7 +41,7 @@ class TestLightState:
         assert self.STATE.LIGHT_ALARMS[0] != existing_alarm
 
     def test_add_replace_light_alarm__should_create_new_alarm_when_does_not_exist(self, mock_api, mock_thread):
-        self.STATE.LIGHT_ALARMS.append(LightAlarm(55, self.TIME, self.DAYS))
+        self.STATE.LIGHT_ALARMS.append(LightAlarmState(55, self.TIME, self.DAYS))
         self.STATE.add_replace_light_alarm(self.GROUP_ID, self.TIME, self.DAYS)
 
         assert len(self.STATE.LIGHT_ALARMS) == 2
@@ -53,7 +53,7 @@ class TestLightState:
 
     @mock.patch('svc.constants.lights_state.LightAlarm')
     def test_add_replace_light_alarm__should_create_the_light_thread(self, mock_light, mock_api, mock_thread):
-        alarm = LightAlarm(self.GROUP_ID, self.TIME, self.DAYS)
+        alarm = LightAlarmState(self.GROUP_ID, self.TIME, self.DAYS)
         mock_light.return_value = alarm
         self.STATE.add_replace_light_alarm(self.GROUP_ID, self.TIME, self.DAYS)
 

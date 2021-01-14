@@ -2,7 +2,7 @@ import datetime
 
 from mock import patch
 
-from svc.constants.lights_state import LightAlarm
+from svc.constants.lights_state import LightAlarmState
 from svc.constants.settings_state import Settings
 from svc.services.light_service import create_light_alarm
 
@@ -16,7 +16,7 @@ class TestLightService:
     TIME = datetime.time()
 
     def setup_method(self):
-        self.ALARM = LightAlarm(self.GROUP_ID, self.TIME, self.DAYS)
+        self.ALARM = LightAlarmState(self.GROUP_ID, self.TIME, self.DAYS)
         self.SETTINGS = Settings.get_instance()
         self.SETTINGS.dev_mode = True
         self.SETTINGS.settings = {'UserId': self.USER_ID}

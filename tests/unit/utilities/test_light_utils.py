@@ -2,7 +2,7 @@ import datetime
 
 from mock import patch
 
-from svc.constants.lights_state import LightAlarm
+from svc.constants.lights_state import LightAlarmState
 from svc.utilities.light_utils import run_light_program
 
 
@@ -18,7 +18,7 @@ class TestLightUtils:
     WEDNESDAY = datetime.datetime(2020, 11, 4, 7, 34, 0)
 
     def setup_method(self):
-        self.LIGHTS = LightAlarm(self.GROUP_ID, self.START_TIME, 'MonTueFri')
+        self.LIGHTS = LightAlarmState(self.GROUP_ID, self.START_TIME, 'MonTueFri')
         self.LIGHTS.ALARM_COUNTER = 0
         self.LIGHTS.ALARM_START_TIME = self.START_TIME
         self.LIGHTS.ALARM_STOP_TIME = self.END_TIME
