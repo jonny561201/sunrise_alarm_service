@@ -46,6 +46,12 @@ class TestLightState:
 
         assert len(self.STATE.LIGHT_ALARMS) == 2
 
+    def test_add_replace_light_alarm__should_create_new_alarm_when_have_matching_group_ids_but_different_days(self, mock_api, mock_thread):
+        self.STATE.LIGHT_ALARMS.append(LightAlarmState(self.GROUP_ID, self.TIME, 'FriSatSun'))
+        self.STATE.add_replace_light_alarm(self.GROUP_ID, self.TIME, self.DAYS)
+
+        assert len(self.STATE.LIGHT_ALARMS) == 2
+
     def test_add_replace_light_alarm__should_return_the_created_light_alarm(self, mock_api, mock_thread):
         actual = self.STATE.add_replace_light_alarm(self.GROUP_ID, self.TIME, self.DAYS)
 

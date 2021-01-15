@@ -20,7 +20,8 @@ class LightState:
     def add_replace_light_alarm(self, light_group_id, alarm_time, alarm_days):
         if light_group_id is None or alarm_time is None:
             return None
-        index = next((i for i, x in enumerate(self.LIGHT_ALARMS) if x.LIGHT_GROUP_ID == light_group_id), None)
+        thread_id = f'{light_group_id}{alarm_days}{alarm_time.isoformat()}'
+        index = next((i for i, x in enumerate(self.LIGHT_ALARMS) if x.THREAD_ID == thread_id), None)
         if index is not None:
             existing_alarm = self.LIGHT_ALARMS.pop(index)
             existing_alarm.STOP_EVENT.set()
