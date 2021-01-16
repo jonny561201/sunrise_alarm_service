@@ -14,7 +14,7 @@ class LightAlarmState(ThreadState):
     ALARM_DAYS = None
     LIGHT_GROUP_ID = None
 
-    def __init__(self, task_id, light_group_id, alarm_time: datetime.time, alarm_days):
+    def __init__(self, task_id: str, light_group_id: str, alarm_time: datetime.time, alarm_days: str):
         self.THREAD_ID = task_id
         self.ALARM_DAYS = alarm_days
         self.LIGHT_GROUP_ID = light_group_id
