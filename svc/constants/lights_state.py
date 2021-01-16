@@ -23,7 +23,6 @@ class LightState:
             create_thread(alarm, lambda: run_light_program(alarm, self.get_light_api_key(), light_group_id), Automation.TIME.TEN_SECONDS)
             self.LIGHT_ALARMS.append(alarm)
 
-    # todo: need to delete threads that have been removed
     def remove_light_alarm(self, task_id):
         index = next((i for i, x in enumerate(self.LIGHT_ALARMS) if x.THREAD_ID == task_id), None)
         if index is not None:
