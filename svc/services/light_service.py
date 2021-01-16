@@ -6,7 +6,7 @@ from svc.utilities.api_utils import get_light_tasks_by_user
 # TODO: how should I get the devices default user id....would be easier if the database was cloud based...
 def create_light_alarm():
     user_id = Settings.get_instance().user_id
-    # TODO: to support multiple alarms just have pref api return a list of alarms and loop to create alarms
-    light_pref = get_light_tasks_by_user(user_id)
-    if light_pref['alarm_time'] is not None and light_pref['alarm_days'] is not None and light_pref['alarm_light_group'] is not None:
-        LightState.get_instance().add_replace_light_alarm(light_pref['alarm_light_group'], light_pref['alarm_time'], light_pref['alarm_days'])
+    light_tasks = get_light_tasks_by_user(user_id)
+    for task in light_tasks:
+        if task['alarm_time'] is not None and task['alarm_days'] is not None and task['alarm_light_group'] is not None:
+            LightState.get_instance().add_replace_light_alarm(task['alarm_light_group'], task['alarm_time'], task['alarm_days'])
