@@ -106,18 +106,18 @@ class TestLightApiRequests:
 
         assert actual['alarm_time'] == time(hour=0, minute=0, second=1)
 
-    def test_get_light_tasks_by_user__should_return_none_when_alarm_is_not_present(self, mock_requests):
+    def test_get_light_tasks_by_user__should_return_empty_list_when_alarm_is_not_present(self, mock_requests):
         response = {'city': 'Berlin'}
         mock_requests.get.return_value = self.__create_response(status=200, data=response)
         actual = get_light_tasks_by_user(self.USER_ID)
 
-        assert actual is None
+        assert actual == []
 
-    def test_get_light_tasks_by_user__should_return_none_when_response_throws_exception(self, mock_requests):
+    def test_get_light_tasks_by_user__should_return_empty_list_when_response_throws_exception(self, mock_requests):
         mock_requests.get.side_effect = TimeoutError()
         actual = get_light_tasks_by_user(self.USER_ID)
 
-        assert actual is None
+        assert actual == []
 
     @staticmethod
     def __create_response(status=200, data=None):

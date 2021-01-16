@@ -66,7 +66,7 @@ class TestLightService:
         create_light_alarm()
 
         mock_light.get_instance.return_value.remove_light_alarm.assert_called_with(missing_task)
-        
+
     def test_create_light_alarm__should_not_fail_when_api_call_returns_empty_list(self, mock_tasks, mock_light):
         mock_tasks.return_value = []
         mock_light.get_instance.return_value.LIGHT_ALARMS = []

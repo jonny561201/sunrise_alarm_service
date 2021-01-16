@@ -40,4 +40,4 @@ def get_light_tasks_by_user(user_id):
         light_response['alarm_time'] = None if light_response.get('alarm_time') is None else time.fromisoformat(light_response['alarm_time'])
         return light_response
     except Exception:
-        return None
+        return []
