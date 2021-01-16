@@ -6,7 +6,7 @@ from requests import ReadTimeout, Response
 
 from svc.constants.home_automation import Automation
 from svc.constants.settings_state import Settings
-from svc.utilities.api_utils import set_light_groups, get_light_api_key, get_light_preferences_by_user
+from svc.utilities.api_utils import set_light_groups, get_light_api_key, get_light_tasks_by_user
 
 
 @patch('svc.utilities.api_utils.requests')
@@ -83,39 +83,39 @@ class TestLightApiRequests:
         expected_request = json.dumps({'on': True, 'bri': brightness})
         mock_requests.put.assert_called_with(ANY, data=expected_request)
 
-    def test_get_light_preferences_by_user__should_make_rest_call_using_url(self, mock_requests):
+    def test_get_light_tasks_by_user__should_make_rest_call_using_url(self, mock_requests):
         settings = Settings.get_instance()
         settings.settings = {'HubBaseUrl': self.BASE_URL}
-        get_light_preferences_by_user(self.USER_ID)
+        get_light_tasks_by_user(self.USER_ID)
 
-        mock_requests.get.assert_called_with(f'{self.BASE_URL}/userId/{self.USER_ID}/preferences', timeout=5)
+        mock_requests.get.assert_called_with(f'{self.BASE_URL}/userId/{self.USER_ID}/tasks', timeout=5)
 
-    def test_get_light_preferences_by_user__should_return_only_light_alarm_values(self, mock_requests):
+    def test_get_light_tasks_by_user__should_return_only_light_alarm_values(self, mock_requests):
         alarm_info = {'alarm_light_group': '1', 'alarm_time': None}
         response = {'city': 'Berlin', 'light_alarm': alarm_info}
         mock_requests.get.return_value = self.__create_response(status=200, data=response)
-        actual = get_light_preferences_by_user(self.USER_ID)
+        actual = get_light_tasks_by_user(self.USER_ID)
 
         assert actual == alarm_info
 
-    def test_get_light_preferences_by_user__should_convert_alarm_time_to_time_object(self, mock_requests):
+    def test_get_light_tasks_by_user__should_convert_alarm_time_to_time_object(self, mock_requests):
         alarm_info = {'alarm_light_group': '1', 'alarm_time': '00:00:01'}
         response = {'city': 'Berlin', 'light_alarm': alarm_info}
         mock_requests.get.return_value = self.__create_response(status=200, data=response)
-        actual = get_light_preferences_by_user(self.USER_ID)
+        actual = get_light_tasks_by_user(self.USER_ID)
 
         assert actual['alarm_time'] == time(hour=0, minute=0, second=1)
 
-    def test_get_light_preferences_by_user__should_return_none_when_alarm_is_not_present(self, mock_requests):
+    def test_get_light_tasks_by_user__should_return_none_when_alarm_is_not_present(self, mock_requests):
         response = {'city': 'Berlin'}
         mock_requests.get.return_value = self.__create_response(status=200, data=response)
-        actual = get_light_preferences_by_user(self.USER_ID)
+        actual = get_light_tasks_by_user(self.USER_ID)
 
         assert actual is None
 
-    def test_get_light_preferences_by_user__should_return_none_when_response_throws_exception(self, mock_requests):
+    def test_get_light_tasks_by_user__should_return_none_when_response_throws_exception(self, mock_requests):
         mock_requests.get.side_effect = TimeoutError()
-        actual = get_light_preferences_by_user(self.USER_ID)
+        actual = get_light_tasks_by_user(self.USER_ID)
 
         assert actual is None
 

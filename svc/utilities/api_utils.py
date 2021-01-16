@@ -32,10 +32,10 @@ def set_light_groups(api_key, group_id, state, brightness=None):
     requests.put(url, data=json.dumps(request))
 
 
-def get_light_preferences_by_user(user_id):
+def get_light_tasks_by_user(user_id):
     base_url = Settings.get_instance().hub_base_url
     try:
-        response = requests.get(f'{base_url}/userId/{user_id}/preferences', timeout=5)
+        response = requests.get(f'{base_url}/userId/{user_id}/tasks', timeout=5)
         light_response = response.json().get('light_alarm')
         light_response['alarm_time'] = None if light_response.get('alarm_time') is None else time.fromisoformat(light_response['alarm_time'])
         return light_response
