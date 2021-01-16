@@ -1,5 +1,5 @@
 import datetime
-from threading import Event
+import uuid
 
 import mock
 
@@ -14,6 +14,7 @@ class TestLightState:
     GROUP_ID = 4
     API_KEY = 'abc123'
     DAYS = 'MonTueWed'
+    TASK_ID = str(uuid.uuid4())
     TIME = datetime.time.fromisoformat('00:00:01')
 
     def setup_method(self):
@@ -21,49 +22,27 @@ class TestLightState:
         self.STATE = LightState.get_instance()
         self.STATE.LIGHT_ALARMS = []
 
-    def test_add_replace_light_alarm__should_cancel_existing_alarm(self, mock_api, mock_thread):
-        test_event = mock.create_autospec(Event)
-        existing_alarm = LightAlarmState(self.GROUP_ID, self.TIME, self.DAYS)
-        existing_alarm.STOP_EVENT = test_event
-        self.STATE.LIGHT_ALARMS.append(existing_alarm)
-        self.STATE.add_replace_light_alarm(self.GROUP_ID, self.TIME, self.DAYS)
-
-        assert len(self.STATE.LIGHT_ALARMS) == 1
-        test_event.set.assert_called()
-
-    def test_add_replace_light_alarm__should_create_a_new_alarm(self, mock_api, mock_thread):
-        existing_alarm = LightAlarmState(self.GROUP_ID, self.TIME, self.DAYS)
-        existing_alarm.STOP_EVENT = mock.create_autospec(Event)
-        self.STATE.LIGHT_ALARMS.append(existing_alarm)
-        self.STATE.add_replace_light_alarm(self.GROUP_ID, self.TIME, self.DAYS)
-
-        assert len(self.STATE.LIGHT_ALARMS) == 1
-        assert self.STATE.LIGHT_ALARMS[0] != existing_alarm
-
-    def test_add_replace_light_alarm__should_create_new_alarm_when_does_not_exist(self, mock_api, mock_thread):
-        self.STATE.LIGHT_ALARMS.append(LightAlarmState(55, self.TIME, self.DAYS))
-        self.STATE.add_replace_light_alarm(self.GROUP_ID, self.TIME, self.DAYS)
-
-        assert len(self.STATE.LIGHT_ALARMS) == 2
-
-    def test_add_replace_light_alarm__should_create_new_alarm_when_have_matching_group_ids_but_different_days(self, mock_api, mock_thread):
-        self.STATE.LIGHT_ALARMS.append(LightAlarmState(self.GROUP_ID, self.TIME, 'FriSatSun'))
-        self.STATE.add_replace_light_alarm(self.GROUP_ID, self.TIME, self.DAYS)
-
-        assert len(self.STATE.LIGHT_ALARMS) == 2
-
-    def test_add_replace_light_alarm__should_return_the_created_light_alarm(self, mock_api, mock_thread):
-        actual = self.STATE.add_replace_light_alarm(self.GROUP_ID, self.TIME, self.DAYS)
-
-        assert actual is not None
-
     @mock.patch('svc.constants.lights_state.LightAlarmState')
-    def test_add_replace_light_alarm__should_create_the_light_thread(self, mock_light, mock_api, mock_thread):
-        alarm = LightAlarmState(self.GROUP_ID, self.TIME, self.DAYS)
+    def test_add_light_alarm__should_create_the_light_thread(self, mock_light, mock_api, mock_thread):
+        alarm = LightAlarmState(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS)
         mock_light.return_value = alarm
-        self.STATE.add_replace_light_alarm(self.GROUP_ID, self.TIME, self.DAYS)
+        self.STATE.add_light_alarm(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS)
 
         mock_thread.assert_called_with(alarm, mock.ANY, Automation.TIME.TEN_SECONDS)
+
+    def test_add_light_alarm__should_not_create_thread_when_it_already_exists(self, mock_api, mock_thread):
+        alarm = LightAlarmState(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS)
+        self.STATE.LIGHT_ALARMS.append(alarm)
+        self.STATE.add_light_alarm(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS)
+
+        mock_thread.assert_not_called()
+
+    def test_add_light_alarm__should_create_thread_when_other_non_matching_threads(self, mock_api, mock_thread):
+        alarm = LightAlarmState(str(uuid.uuid4()), self.GROUP_ID, self.TIME, self.DAYS)
+        self.STATE.LIGHT_ALARMS.append(alarm)
+        self.STATE.add_light_alarm(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS)
+
+        mock_thread.assert_called()
 
     def test_get_light_api_key__should_return_cached_api_key(self, mock_api, mock_thread):
         self.STATE.API_KEY = self.API_KEY
@@ -78,11 +57,11 @@ class TestLightState:
         mock_api.assert_called_with(self.SETTINGS.light_api_user, self.SETTINGS.light_api_password)
 
     def test_get_light_api_key__should_not_create_alarm_when_group_id_is_none(self, mock_api, mock_thread):
-        self.STATE.add_replace_light_alarm(None, self.TIME, self.DAYS)
+        self.STATE.add_light_alarm(None, self.TIME, self.DAYS)
 
         assert len(self.STATE.LIGHT_ALARMS) == 0
 
     def test_get_light_api_key__should_not_create_alarm_when_alarm_time_is_none(self, mock_api, mock_thread):
-        self.STATE.add_replace_light_alarm(self.GROUP_ID, None, self.DAYS)
+        self.STATE.add_light_alarm(self.GROUP_ID, None, self.DAYS)
 
         assert len(self.STATE.LIGHT_ALARMS) == 0

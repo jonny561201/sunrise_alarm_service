@@ -17,18 +17,19 @@ class LightState:
         else:
             LightState.__instance = self
 
-    def add_replace_light_alarm(self, light_group_id, alarm_time, alarm_days):
-        if light_group_id is None or alarm_time is None:
-            return None
-        thread_id = f'{light_group_id}{alarm_days}{alarm_time.isoformat()}'
-        index = next((i for i, x in enumerate(self.LIGHT_ALARMS) if x.THREAD_ID == thread_id), None)
-        if index is not None:
-            existing_alarm = self.LIGHT_ALARMS.pop(index)
-            existing_alarm.STOP_EVENT.set()
-        alarm = LightAlarmState(light_group_id, alarm_time, alarm_days)
-        create_thread(alarm, lambda: run_light_program(alarm, self.get_light_api_key(), light_group_id), Automation.TIME.TEN_SECONDS)
-        self.LIGHT_ALARMS.append(alarm)
-        return alarm
+    def add_light_alarm(self, task_id, light_group_id, alarm_time, alarm_days):
+        if not any(alarm.THREAD_ID == task_id for alarm in self.LIGHT_ALARMS):
+            alarm = LightAlarmState(task_id, light_group_id, alarm_time, alarm_days)
+            create_thread(alarm, lambda: run_light_program(alarm, self.get_light_api_key(), light_group_id), Automation.TIME.TEN_SECONDS)
+            self.LIGHT_ALARMS.append(alarm)
+
+    # todo: need to delete threads that have been removed
+    def remove_light_alarm(self, task_id):
+        # index = next((i for i, x in enumerate(self.LIGHT_ALARMS) if x.THREAD_ID == thread_id), None)
+        # if index is not None:
+        #     existing_alarm = self.LIGHT_ALARMS.pop(index)
+        #     existing_alarm.STOP_EVENT.set()
+        pass
 
     def get_light_api_key(self):
         if self.API_KEY is None:
