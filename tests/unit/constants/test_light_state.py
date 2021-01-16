@@ -44,6 +44,13 @@ class TestLightState:
 
         mock_thread.assert_called()
 
+    def test_remove_light_alarm__should_remove_item_from_list_with_matching_task_id(self, mock_api, mock_thread):
+        alarm = LightAlarmState(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS)
+        self.STATE.LIGHT_ALARMS.append(alarm)
+        self.STATE.remove_light_alarm(self.TASK_ID)
+
+        assert self.STATE.LIGHT_ALARMS == []
+
     def test_get_light_api_key__should_return_cached_api_key(self, mock_api, mock_thread):
         self.STATE.API_KEY = self.API_KEY
         actual = self.STATE.get_light_api_key()
