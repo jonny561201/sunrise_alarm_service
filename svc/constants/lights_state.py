@@ -25,10 +25,9 @@ class LightState:
 
     # todo: need to delete threads that have been removed
     def remove_light_alarm(self, task_id):
-        self.LIGHT_ALARMS = []
-        # index = next((i for i, x in enumerate(self.LIGHT_ALARMS) if x.THREAD_ID == thread_id), None)
-        # if index is not None:
-        #     existing_alarm = self.LIGHT_ALARMS.pop(index)
+        index = next((i for i, x in enumerate(self.LIGHT_ALARMS) if x.THREAD_ID == task_id), None)
+        if index is not None:
+            self.LIGHT_ALARMS.pop(index)
         #     existing_alarm.STOP_EVENT.set()
 
     def get_light_api_key(self):
