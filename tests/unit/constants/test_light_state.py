@@ -12,7 +12,7 @@ from svc.constants.settings_state import Settings
 @mock.patch('svc.constants.lights_state.create_thread')
 @mock.patch('svc.constants.lights_state.get_light_api_key')
 class TestLightState:
-    GROUP_ID = 4
+    GROUP_ID = '4'
     API_KEY = 'abc123'
     DAYS = 'MonTueWed'
     TASK_ID = str(uuid.uuid4())
