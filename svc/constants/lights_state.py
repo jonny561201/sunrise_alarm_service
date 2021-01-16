@@ -27,8 +27,8 @@ class LightState:
     def remove_light_alarm(self, task_id):
         index = next((i for i, x in enumerate(self.LIGHT_ALARMS) if x.THREAD_ID == task_id), None)
         if index is not None:
-            self.LIGHT_ALARMS.pop(index)
-        #     existing_alarm.STOP_EVENT.set()
+            existing_alarm = self.LIGHT_ALARMS.pop(index)
+            existing_alarm.STOP_EVENT.set()
 
     def get_light_api_key(self):
         if self.API_KEY is None:
