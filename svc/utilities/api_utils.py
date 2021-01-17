@@ -36,8 +36,9 @@ def get_light_tasks_by_user(user_id):
     base_url = Settings.get_instance().hub_base_url
     try:
         response = requests.get(f'{base_url}/userId/{user_id}/tasks', timeout=5)
-        light_response = response.json().get('light_alarm')
-        light_response['alarm_time'] = None if light_response.get('alarm_time') is None else time.fromisoformat(light_response['alarm_time'])
+        light_response = response.json()
+        for task in light_response:
+            task['alarm_time'] = None if task.get('alarm_time') is None else time.fromisoformat(task['alarm_time'])
         return light_response
     except Exception:
         return []
