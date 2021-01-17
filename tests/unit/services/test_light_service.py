@@ -3,7 +3,7 @@ import uuid
 
 from mock import patch
 
-from svc.constants.lights_state import LightAlarmState, LightState
+from svc.constants.lights_state import LightAlarmState
 from svc.constants.settings_state import Settings
 from svc.services.light_service import create_light_alarm
 
@@ -74,3 +74,11 @@ class TestLightService:
 
         mock_light.get_instance.return_value.add_light_alarm.assert_not_called()
         mock_light.get_instance.return_value.remove_light_alarm.assert_not_called()
+
+    @patch('svc.services.light_service.logging')
+    def test_create_light_alarm__should_log_when_exception(self, mock_log, mock_tasks, mock_light):
+        error = TimeoutError()
+        mock_tasks.side_effect = error
+        create_light_alarm()
+
+        mock_log.error.assert_called_with(error)

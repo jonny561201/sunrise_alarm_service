@@ -23,7 +23,8 @@ class LightState:
         if not any(alarm.THREAD_ID == task_id for alarm in self.LIGHT_ALARMS):
             logging.info(f'-----added new light alarm id: {task_id}-----')
             alarm = LightAlarmState(task_id, light_group_id, alarm_time, alarm_days)
-            create_thread(alarm, lambda: run_light_program(alarm, self.get_light_api_key(), light_group_id), Automation.TIME.TEN_SECONDS)
+            alarm.ACTIVE_THREAD = create_thread(lambda: run_light_program(alarm, self.get_light_api_key(), light_group_id), Automation.TIME.TEN_SECONDS)
+            alarm.ACTIVE_THREAD.start()
             self.LIGHT_ALARMS.append(alarm)
 
     def remove_light_alarm(self, task_id):
@@ -31,7 +32,7 @@ class LightState:
         if index is not None:
             logging.info(f'-----removed light alarm id: {task_id}-----')
             existing_alarm = self.LIGHT_ALARMS.pop(index)
-            existing_alarm.STOP_EVENT.set()
+            existing_alarm.ACTIVE_THREAD.stopped.set()
 
     def get_light_api_key(self):
         if self.API_KEY is None:

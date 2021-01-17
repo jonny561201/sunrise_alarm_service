@@ -7,6 +7,7 @@ import mock
 from svc.constants.home_automation import Automation
 from svc.constants.lights_state import LightState, LightAlarmState
 from svc.constants.settings_state import Settings
+from svc.utilities.event_utils import MyThread
 
 
 @mock.patch('svc.constants.lights_state.create_thread')
@@ -25,11 +26,9 @@ class TestLightState:
 
     @mock.patch('svc.constants.lights_state.LightAlarmState')
     def test_add_light_alarm__should_create_the_light_thread(self, mock_light, mock_api, mock_thread):
-        alarm = LightAlarmState(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS)
-        mock_light.return_value = alarm
         self.STATE.add_light_alarm(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS)
 
-        mock_thread.assert_called_with(alarm, mock.ANY, Automation.TIME.TEN_SECONDS)
+        mock_thread.assert_called_with(mock.ANY, Automation.TIME.TEN_SECONDS)
 
     def test_add_light_alarm__should_not_create_thread_when_it_already_exists(self, mock_api, mock_thread):
         alarm = LightAlarmState(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS)
@@ -45,10 +44,24 @@ class TestLightState:
 
         mock_thread.assert_called()
 
+    def test_add_light_alarm__should_store_the_thread_on_the_alarm_list(self, mock_api, mock_thread):
+        self.STATE.add_light_alarm(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS)
+
+        assert len(self.STATE.LIGHT_ALARMS) == 1
+
+    def test_add_light_alarm__should_start_the_newly_created_thread(self, mock_api, mock_thread):
+        mock_alarm = mock.create_autospec(MyThread)
+        mock_thread.return_value = mock_alarm
+        self.STATE.add_light_alarm(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS)
+
+        mock_alarm.start.assert_called()
+
     def test_remove_light_alarm__should_remove_item_from_list_with_matching_task_id(self, mock_api, mock_thread):
         event = mock.create_autospec(Event)
+        my_alarm = mock.create_autospec(MyThread)
+        my_alarm.stopped = event
         alarm = LightAlarmState(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS)
-        alarm.STOP_EVENT = event
+        alarm.ACTIVE_THREAD = my_alarm
         self.STATE.LIGHT_ALARMS.append(alarm)
         self.STATE.remove_light_alarm(self.TASK_ID)
 
@@ -63,8 +76,10 @@ class TestLightState:
 
     def test_remove_light_alarm__should_stop_matching_alarms(self, mock_api, mock_thread):
         event = mock.create_autospec(Event)
+        my_alarm = mock.create_autospec(MyThread)
+        my_alarm.stopped = event
         alarm = LightAlarmState(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS)
-        alarm.STOP_EVENT = event
+        alarm.ACTIVE_THREAD = my_alarm
         self.STATE.LIGHT_ALARMS.append(alarm)
         self.STATE.remove_light_alarm(self.TASK_ID)
 

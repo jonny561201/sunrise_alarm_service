@@ -7,10 +7,13 @@ from svc.utilities.api_utils import get_light_tasks_by_user
 
 # TODO: how should I get the devices default user id....would be easier if the database was cloud based...
 def create_light_alarm():
-    light_state = LightState.get_instance()
-    light_tasks = get_light_tasks_by_user(Settings.get_instance().user_id)
-    __add_new_alarms(light_state, light_tasks)
-    __remove_cancelled_alarms(light_state, light_tasks)
+    try:
+        light_state = LightState.get_instance()
+        light_tasks = get_light_tasks_by_user(Settings.get_instance().user_id)
+        __add_new_alarms(light_state, light_tasks)
+        __remove_cancelled_alarms(light_state, light_tasks)
+    except Exception as er:
+        logging.error(er)
 
 
 def __add_new_alarms(light_state, light_tasks):

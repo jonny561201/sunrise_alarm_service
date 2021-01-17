@@ -3,7 +3,6 @@ import datetime
 
 class ThreadState:
     ACTIVE_THREAD = None
-    STOP_EVENT = None
     THREAD_ID = None
 
 

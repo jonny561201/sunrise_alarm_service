@@ -9,8 +9,9 @@ from svc.utilities.light_utils import run_light_program
 @patch('svc.utilities.light_utils.datetime')
 @patch('svc.utilities.light_utils.set_light_groups')
 class TestLightUtils:
-    API_KEY = 'test_api_key'
     GROUP_ID = '3'
+    TASK_ID = 'abc123'
+    API_KEY = 'test_api_key'
     START_TIME = datetime.time(7, 30, 0)
     END_TIME = datetime.time(7, 40, 0)
     MONDAY = datetime.datetime(2020, 11, 2, 7, 34, 0)
@@ -18,7 +19,7 @@ class TestLightUtils:
     WEDNESDAY = datetime.datetime(2020, 11, 4, 7, 34, 0)
 
     def setup_method(self):
-        self.LIGHTS = LightAlarmState(self.GROUP_ID, self.START_TIME, 'MonTueFri')
+        self.LIGHTS = LightAlarmState(self.TASK_ID, self.GROUP_ID, self.START_TIME, 'MonTueFri')
         self.LIGHTS.ALARM_COUNTER = 0
         self.LIGHTS.ALARM_START_TIME = self.START_TIME
         self.LIGHTS.ALARM_STOP_TIME = self.END_TIME
