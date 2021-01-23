@@ -34,6 +34,12 @@ class TestLightService:
 
         mock_light.get_instance.return_value.add_light_alarm.assert_not_called()
 
+    def test_create_light_alarm__should_not_call_add_replace_alarm_when_disabled(self, mock_tasks, mock_light):
+        mock_tasks.return_value = [{'alarm_time': self.TIME, 'alarm_days': self.DAYS, 'alarm_light_group': self.GROUP_ID, 'task_id': self.TASK_ID, 'enabled': False}]
+        create_light_alarm()
+
+        mock_light.get_instance.return_value.add_light_alarm.assert_not_called()
+
     def test_create_light_alarm__should_not_call_add_replace_alarm_when_alarm_days_none(self, mock_tasks, mock_light):
         mock_tasks.return_value = [{'alarm_time': self.TIME, 'alarm_days': None, 'alarm_light_group': self.GROUP_ID, 'task_id': self.TASK_ID}]
         create_light_alarm()
@@ -47,7 +53,7 @@ class TestLightService:
         mock_light.get_instance.return_value.add_light_alarm.assert_not_called()
 
     def test_create_light_alarm__should_call_add_alarm(self, mock_tasks, mock_light):
-        light_pref = {'alarm_time': self.TIME, 'alarm_days': self.DAYS, 'alarm_light_group': self.GROUP_ID, 'task_id': self.TASK_ID}
+        light_pref = {'alarm_time': self.TIME, 'alarm_days': self.DAYS, 'alarm_light_group': self.GROUP_ID, 'task_id': self.TASK_ID, 'enabled': True}
         mock_tasks.return_value = [light_pref]
         create_light_alarm()
 
@@ -56,8 +62,8 @@ class TestLightService:
     def test_create_light_alarm__should_call_remove_light_on_items_missing_from_api_response(self, mock_tasks, mock_light):
         other_task = str(uuid.uuid4())
         missing_task = str(uuid.uuid4())
-        pref_one = {'alarm_time': self.TIME, 'alarm_days': self.DAYS, 'alarm_light_group': self.GROUP_ID, 'task_id': self.TASK_ID}
-        pref_two = {'alarm_time': self.TIME, 'alarm_days': self.DAYS, 'alarm_light_group': self.GROUP_ID, 'task_id': other_task}
+        pref_one = {'alarm_time': self.TIME, 'alarm_days': self.DAYS, 'alarm_light_group': self.GROUP_ID, 'task_id': self.TASK_ID, 'enabled': True}
+        pref_two = {'alarm_time': self.TIME, 'alarm_days': self.DAYS, 'alarm_light_group': self.GROUP_ID, 'task_id': other_task, 'enabled': True}
         alarm_one = LightAlarmState(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS)
         alarm_two = LightAlarmState(other_task, self.GROUP_ID, self.TIME, self.DAYS)
         alarm_three = LightAlarmState(missing_task, self.GROUP_ID, self.TIME, self.DAYS)
