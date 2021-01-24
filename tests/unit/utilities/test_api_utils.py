@@ -13,7 +13,7 @@ from svc.utilities.api_utils import set_light_groups, get_light_api_key, get_lig
 class TestLightApiRequests:
     USERNAME = 'fake username'
     PASSWORD = 'fake password'
-    BASE_URL = 'http://192.168.1.142:80/api'
+    BASE_URL = 'http://localhost:80/api'
     API_KEY = 'fake api key'
     LIGHT_API = None
     USER_ID = 'def456'

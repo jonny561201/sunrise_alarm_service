@@ -7,7 +7,7 @@ import requests
 from svc.constants.home_automation import Automation
 from svc.constants.settings_state import Settings
 
-LIGHT_BASE_URL = 'http://192.168.1.142:80/api'
+LIGHT_BASE_URL = 'http://localhost:80/api'
 
 
 def get_light_api_key(username, password):
