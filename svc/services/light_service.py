@@ -21,7 +21,7 @@ def __add_new_alarms(light_state, light_tasks):
     for task in light_tasks:
         if task['alarm_time'] is not None and task['alarm_days'] is not None and task['alarm_light_group'] is not None:
             task_id = task['task_id']
-            light_state.add_light_alarm(task_id, task['alarm_light_group'], task['alarm_time'], task['alarm_days'])
+            light_state.add_light_alarm(task_id, task['alarm_light_group'], task['alarm_time'], task['alarm_days'], task['task_type'])
 
 
 def __remove_cancelled_alarms(light_state, light_tasks):

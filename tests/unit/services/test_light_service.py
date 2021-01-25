@@ -14,6 +14,7 @@ class TestLightService:
     DAYS = 'MonTue'
     USER_ID = 'def098'
     GROUP_ID = 'abc123'
+    TASK_TYPE = 'turn off'
     TIME = datetime.time()
     TASK_ID = str(uuid.uuid4())
 
@@ -53,17 +54,17 @@ class TestLightService:
         mock_light.get_instance.return_value.add_light_alarm.assert_not_called()
 
     def test_create_light_alarm__should_call_add_alarm(self, mock_tasks, mock_light):
-        light_pref = {'alarm_time': self.TIME, 'alarm_days': self.DAYS, 'alarm_light_group': self.GROUP_ID, 'task_id': self.TASK_ID, 'enabled': True}
+        light_pref = {'alarm_time': self.TIME, 'alarm_days': self.DAYS, 'alarm_light_group': self.GROUP_ID, 'task_id': self.TASK_ID, 'enabled': True, 'task_type': self.TASK_TYPE}
         mock_tasks.return_value = [light_pref]
         create_light_alarm()
 
-        mock_light.get_instance.return_value.add_light_alarm.assert_called_with(self.TASK_ID, light_pref['alarm_light_group'], light_pref['alarm_time'], light_pref['alarm_days'])
+        mock_light.get_instance.return_value.add_light_alarm.assert_called_with(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS, self.TASK_TYPE)
 
     def test_create_light_alarm__should_call_remove_light_on_items_missing_from_api_response(self, mock_tasks, mock_light):
         other_task = str(uuid.uuid4())
         missing_task = str(uuid.uuid4())
-        pref_one = {'alarm_time': self.TIME, 'alarm_days': self.DAYS, 'alarm_light_group': self.GROUP_ID, 'task_id': self.TASK_ID, 'enabled': True}
-        pref_two = {'alarm_time': self.TIME, 'alarm_days': self.DAYS, 'alarm_light_group': self.GROUP_ID, 'task_id': other_task, 'enabled': True}
+        pref_one = {'alarm_time': self.TIME, 'alarm_days': self.DAYS, 'alarm_light_group': self.GROUP_ID, 'task_id': self.TASK_ID, 'enabled': True, 'task_type': self.TASK_TYPE}
+        pref_two = {'alarm_time': self.TIME, 'alarm_days': self.DAYS, 'alarm_light_group': self.GROUP_ID, 'task_id': other_task, 'enabled': True, 'task_type': self.TASK_TYPE}
         alarm_one = LightAlarmState(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS)
         alarm_two = LightAlarmState(other_task, self.GROUP_ID, self.TIME, self.DAYS)
         alarm_three = LightAlarmState(missing_task, self.GROUP_ID, self.TIME, self.DAYS)
