@@ -19,7 +19,7 @@ class LightState:
         else:
             LightState.__instance = self
 
-    def add_light_alarm(self, task_id, light_group_id, alarm_time, alarm_days):
+    def add_light_alarm(self, task_id, light_group_id, alarm_time, alarm_days, task_type):
         if not any(alarm.THREAD_ID == task_id for alarm in self.LIGHT_ALARMS):
             logging.info(f'-----added new light alarm id: {task_id}-----')
             alarm = LightAlarmState(task_id, light_group_id, alarm_time, alarm_days)
