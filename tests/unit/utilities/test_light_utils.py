@@ -88,4 +88,10 @@ class TestLightUtils:
 
         mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, True, 0)
 
+    def test_light_on_program__should_not_turn_light_to_max_when_after_timer_on_wrong_day(self, mock_api, mock_date):
+        mock_date.datetime.now.return_value = self.SUNDAY
+        light_on_program(self.LIGHTS, self.API_KEY, self.GROUP_ID)
+
+        mock_api.assert_not_called()
+
 

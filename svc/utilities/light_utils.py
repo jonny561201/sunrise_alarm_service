@@ -21,4 +21,7 @@ def __is_within_alarm(light_state, day_name, now):
 
 
 def light_on_program(alarm_state, api_key, group_id):
-    set_light_groups(api_key, group_id, True, 0)
+    now = datetime.datetime.now()
+    day_name = now.strftime('%a')
+    if day_name in alarm_state.ALARM_DAYS:
+        set_light_groups(api_key, group_id, True, 0)
