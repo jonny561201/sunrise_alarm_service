@@ -204,3 +204,14 @@ class TestLightUtils:
         light_off_program(self.LIGHT_ON, self.API_KEY, self.GROUP_ID)
 
         mock_api.assert_not_called()
+
+    def test_light_off_program__should_reset_triggered_value_after_one_minute(self, mock_api, mock_date):
+        self.LIGHT_ON.TRIGGERED = True
+        mock_date.datetime.combine.side_effect = datetime.datetime.combine
+        mock_date.timedelta.side_effect = datetime.timedelta
+        mock_date.date.today.return_value = datetime.datetime.today()
+        one_minute_later = self.MONDAY + datetime.timedelta(minutes=-3, seconds=1)
+        mock_date.datetime.now.return_value = one_minute_later
+        light_off_program(self.LIGHT_ON, self.API_KEY, self.GROUP_ID)
+
+        assert self.LIGHT_ON.TRIGGERED is False
