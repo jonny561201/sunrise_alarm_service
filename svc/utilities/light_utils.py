@@ -25,3 +25,6 @@ def light_on_program(alarm_state, api_key, group_id):
     day_name = now.strftime('%a')
     if day_name in alarm_state.ALARM_DAYS and now.time() >= alarm_state.ALARM_START_TIME and not alarm_state.TRIGGERED:
         set_light_groups(api_key, group_id, True, 0)
+    one_minute_after = (datetime.datetime.combine(datetime.date.today(), alarm_state.ALARM_START_TIME) + datetime.timedelta(minutes=1)).time()
+    if now.time() > one_minute_after:
+        alarm_state.TRIGGERED = False

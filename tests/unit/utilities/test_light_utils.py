@@ -7,7 +7,6 @@ from svc.constants.thread_state import LightOnState
 from svc.utilities.light_utils import light_alarm_program, light_on_program
 
 
-
 @patch('svc.utilities.light_utils.datetime')
 @patch('svc.utilities.light_utils.set_light_groups')
 class TestLightUtils:
@@ -88,18 +87,27 @@ class TestLightUtils:
 
     def test_light_on_program__should_turn_light_to_max_when_after_timer_on_matching_day(self, mock_api, mock_date):
         mock_date.datetime.now.return_value = self.MONDAY
+        mock_date.datetime.combine.side_effect = datetime.datetime.combine
+        mock_date.timedelta.side_effect = datetime.timedelta
+        mock_date.date.today.return_value = datetime.datetime.today()
         light_on_program(self.LIGHT_ON, self.API_KEY, self.GROUP_ID)
 
         mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, True, 0)
 
     def test_light_on_program__should_not_turn_light_to_max_when_after_timer_on_wrong_day(self, mock_api, mock_date):
         mock_date.datetime.now.return_value = self.SUNDAY
+        mock_date.datetime.combine.side_effect = datetime.datetime.combine
+        mock_date.timedelta.side_effect = datetime.timedelta
+        mock_date.date.today.return_value = datetime.datetime.today()
         light_on_program(self.LIGHT_ON, self.API_KEY, self.GROUP_ID)
 
         mock_api.assert_not_called()
 
     def test_light_on_program__should_not_turn_on_light_just_before_timer(self, mock_api, mock_date):
         before_time = self.MONDAY + datetime.timedelta(minutes=-4, seconds=-1)
+        mock_date.datetime.combine.side_effect = datetime.datetime.combine
+        mock_date.timedelta.side_effect = datetime.timedelta
+        mock_date.date.today.return_value = datetime.datetime.today()
         mock_date.datetime.now.return_value = before_time
         light_on_program(self.LIGHT_ON, self.API_KEY, self.GROUP_ID)
 
@@ -107,6 +115,9 @@ class TestLightUtils:
 
     def test_light_on_program__should_turn_on_light_when_exactly_at_timer(self, mock_api, mock_date):
         exact_time = self.MONDAY + datetime.timedelta(minutes=-4)
+        mock_date.datetime.combine.side_effect = datetime.datetime.combine
+        mock_date.timedelta.side_effect = datetime.timedelta
+        mock_date.date.today.return_value = datetime.datetime.today()
         mock_date.datetime.now.return_value = exact_time
         light_on_program(self.LIGHT_ON, self.API_KEY, self.GROUP_ID)
 
@@ -114,7 +125,21 @@ class TestLightUtils:
 
     def test_light_on_program__should_not_turn_on_light_after_already_turning_on(self, mock_api, mock_date):
         self.LIGHT_ON.TRIGGERED = True
+        mock_date.datetime.combine.side_effect = datetime.datetime.combine
+        mock_date.timedelta.side_effect = datetime.timedelta
+        mock_date.date.today.return_value = datetime.datetime.today()
         mock_date.datetime.now.return_value = self.MONDAY
         light_on_program(self.LIGHT_ON, self.API_KEY, self.GROUP_ID)
 
         mock_api.assert_not_called()
+
+    def test_light_on_program__should_reset_triggered_value_after_one_minute(self, mock_api, mock_date):
+        self.LIGHT_ON.TRIGGERED = True
+        mock_date.datetime.combine.side_effect = datetime.datetime.combine
+        mock_date.timedelta.side_effect = datetime.timedelta
+        mock_date.date.today.return_value = datetime.datetime.today()
+        one_minute_later = self.MONDAY + datetime.timedelta(minutes=-3, seconds=1)
+        mock_date.datetime.now.return_value = one_minute_later
+        light_on_program(self.LIGHT_ON, self.API_KEY, self.GROUP_ID)
+
+        assert self.LIGHT_ON.TRIGGERED is False
