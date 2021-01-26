@@ -42,5 +42,6 @@ def __is_within_on_time(day_name, alarm_state, current_time, one_minute_after):
 def light_off_program(alarm_state, api_key, group_id):
     now = datetime.datetime.now()
     day_name = now.strftime('%a')
-    if day_name in alarm_state.ALARM_DAYS:
+    current_time = now.time()
+    if day_name in alarm_state.ALARM_DAYS and current_time > alarm_state.ALARM_START_TIME:
         set_light_groups(api_key, group_id, True, 0)

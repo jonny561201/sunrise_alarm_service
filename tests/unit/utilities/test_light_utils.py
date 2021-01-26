@@ -157,7 +157,7 @@ class TestLightUtils:
         mock_api.assert_not_called()
 
     def test_light_off_program__should_turn_light_to_min_when_after_timer_on_matching_day(self, mock_api, mock_date):
-        mock_date.datetime.now.return_value = self.MONDAY + datetime.timedelta(minutes=-4)
+        mock_date.datetime.now.return_value = self.MONDAY + datetime.timedelta(minutes=-4, seconds=30)
         mock_date.datetime.combine.side_effect = datetime.datetime.combine
         mock_date.timedelta.side_effect = datetime.timedelta
         mock_date.date.today.return_value = datetime.datetime.today()
@@ -170,6 +170,16 @@ class TestLightUtils:
         mock_date.datetime.combine.side_effect = datetime.datetime.combine
         mock_date.timedelta.side_effect = datetime.timedelta
         mock_date.date.today.return_value = datetime.datetime.today()
+        light_off_program(self.LIGHT_ON, self.API_KEY, self.GROUP_ID)
+
+        mock_api.assert_not_called()
+
+    def test_light_off_program__should_not_turn_off_light_just_before_timer(self, mock_api, mock_date):
+        before_time = self.MONDAY + datetime.timedelta(minutes=-4, seconds=-1)
+        mock_date.datetime.combine.side_effect = datetime.datetime.combine
+        mock_date.timedelta.side_effect = datetime.timedelta
+        mock_date.date.today.return_value = datetime.datetime.today()
+        mock_date.datetime.now.return_value = before_time
         light_off_program(self.LIGHT_ON, self.API_KEY, self.GROUP_ID)
 
         mock_api.assert_not_called()
