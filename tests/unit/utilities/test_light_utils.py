@@ -122,6 +122,7 @@ class TestLightUtils:
         light_on_program(self.LIGHT_ON, self.API_KEY, self.GROUP_ID)
 
         mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, True, 0)
+        assert self.LIGHT_ON.TRIGGERED is True
 
     def test_light_on_program__should_not_turn_on_light_after_already_turning_on(self, mock_api, mock_date):
         self.LIGHT_ON.TRIGGERED = True
