@@ -183,3 +183,14 @@ class TestLightUtils:
         light_off_program(self.LIGHT_ON, self.API_KEY, self.GROUP_ID)
 
         mock_api.assert_not_called()
+
+    def test_light_off_program__should_turn_off_light_when_exactly_at_timer(self, mock_api, mock_date):
+        exact_time = self.MONDAY + datetime.timedelta(minutes=-4)
+        mock_date.datetime.combine.side_effect = datetime.datetime.combine
+        mock_date.timedelta.side_effect = datetime.timedelta
+        mock_date.date.today.return_value = datetime.datetime.today()
+        mock_date.datetime.now.return_value = exact_time
+        light_off_program(self.LIGHT_ON, self.API_KEY, self.GROUP_ID)
+
+        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, True, 0)
+        assert self.LIGHT_ON.TRIGGERED is True
