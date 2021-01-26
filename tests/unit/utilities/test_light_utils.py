@@ -22,7 +22,7 @@ class TestLightUtils:
 
     def setup_method(self):
         self.LIGHT_ON = LightOnOffState(self.TASK_ID, self.START_TIME, self.DAYS)
-        self.ALARM = LightAlarmState(self.TASK_ID, self.GROUP_ID, self.START_TIME, self.DAYS)
+        self.ALARM = LightAlarmState(self.TASK_ID, self.START_TIME, self.DAYS)
         self.ALARM.ALARM_COUNTER = 0
         self.ALARM.ALARM_START_TIME = self.START_TIME
         self.ALARM.ALARM_STOP_TIME = self.END_TIME

@@ -23,7 +23,7 @@ class LightState:
         if not any(alarm.THREAD_ID == task_id for alarm in self.LIGHT_ALARMS):
             logging.info(f'-----added new light alarm id: {task_id}-----')
             if task_type == Automation.LIGHT.SUNRISE:
-                alarm = LightAlarmState(task_id, light_group_id, alarm_time, alarm_days)
+                alarm = LightAlarmState(task_id, alarm_time, alarm_days)
                 alarm.ACTIVE_THREAD = create_thread(lambda: light_alarm_program(alarm, self.get_light_api_key(), light_group_id), Automation.TIME.TEN_SECONDS)
                 alarm.ACTIVE_THREAD.start()
                 self.LIGHT_ALARMS.append(alarm)

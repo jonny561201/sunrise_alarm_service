@@ -71,14 +71,14 @@ class TestLightState:
         mock_alarm.start.assert_called()
 
     def test_add_light_alarm__should_not_create_thread_when_it_already_exists(self, mock_api, mock_thread):
-        alarm = LightAlarmState(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS)
+        alarm = LightAlarmState(self.TASK_ID, self.TIME, self.DAYS)
         self.STATE.LIGHT_ALARMS.append(alarm)
         self.STATE.add_light_alarm(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS, self.TASK_TYPE)
 
         mock_thread.assert_not_called()
 
     def test_add_light_alarm__should_create_thread_when_other_non_matching_threads(self, mock_api, mock_thread):
-        alarm = LightAlarmState(str(uuid.uuid4()), self.GROUP_ID, self.TIME, self.DAYS)
+        alarm = LightAlarmState(str(uuid.uuid4()), self.TIME, self.DAYS)
         self.STATE.LIGHT_ALARMS.append(alarm)
         self.STATE.add_light_alarm(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS, self.TASK_TYPE)
 
@@ -100,7 +100,7 @@ class TestLightState:
         event = mock.create_autospec(Event)
         my_alarm = mock.create_autospec(MyThread)
         my_alarm.stopped = event
-        alarm = LightAlarmState(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS)
+        alarm = LightAlarmState(self.TASK_ID, self.TIME, self.DAYS)
         alarm.ACTIVE_THREAD = my_alarm
         self.STATE.LIGHT_ALARMS.append(alarm)
         self.STATE.remove_light_alarm(self.TASK_ID)
@@ -108,7 +108,7 @@ class TestLightState:
         assert self.STATE.LIGHT_ALARMS == []
 
     def test_remove_light_alarm__should_not_remove_item_from_list_with_different_task_id(self, mock_api, mock_thread):
-        alarm = LightAlarmState(str(uuid.uuid4()), self.GROUP_ID, self.TIME, self.DAYS)
+        alarm = LightAlarmState(str(uuid.uuid4()), self.TIME, self.DAYS)
         self.STATE.LIGHT_ALARMS.append(alarm)
         self.STATE.remove_light_alarm(self.TASK_ID)
 
@@ -118,7 +118,7 @@ class TestLightState:
         event = mock.create_autospec(Event)
         my_alarm = mock.create_autospec(MyThread)
         my_alarm.stopped = event
-        alarm = LightAlarmState(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS)
+        alarm = LightAlarmState(self.TASK_ID, self.TIME, self.DAYS)
         alarm.ACTIVE_THREAD = my_alarm
         self.STATE.LIGHT_ALARMS.append(alarm)
         self.STATE.remove_light_alarm(self.TASK_ID)

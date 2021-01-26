@@ -19,7 +19,7 @@ class TestLightService:
     TASK_ID = str(uuid.uuid4())
 
     def setup_method(self):
-        self.ALARM = LightAlarmState(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS)
+        self.ALARM = LightAlarmState(self.TASK_ID, self.TIME, self.DAYS)
         self.SETTINGS = Settings.get_instance()
         self.SETTINGS.dev_mode = True
         self.SETTINGS.settings = {'UserId': self.USER_ID}
@@ -65,9 +65,9 @@ class TestLightService:
         missing_task = str(uuid.uuid4())
         pref_one = {'alarm_time': self.TIME, 'alarm_days': self.DAYS, 'alarm_light_group': self.GROUP_ID, 'task_id': self.TASK_ID, 'enabled': True, 'task_type': self.TASK_TYPE}
         pref_two = {'alarm_time': self.TIME, 'alarm_days': self.DAYS, 'alarm_light_group': self.GROUP_ID, 'task_id': other_task, 'enabled': True, 'task_type': self.TASK_TYPE}
-        alarm_one = LightAlarmState(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS)
-        alarm_two = LightAlarmState(other_task, self.GROUP_ID, self.TIME, self.DAYS)
-        alarm_three = LightAlarmState(missing_task, self.GROUP_ID, self.TIME, self.DAYS)
+        alarm_one = LightAlarmState(self.TASK_ID, self.TIME, self.DAYS)
+        alarm_two = LightAlarmState(other_task, self.TIME, self.DAYS)
+        alarm_three = LightAlarmState(missing_task, self.TIME, self.DAYS)
         mock_light.get_instance.return_value.LIGHT_ALARMS = [alarm_one, alarm_two, alarm_three]
         mock_tasks.return_value = [pref_one, pref_two]
         create_light_alarm()
