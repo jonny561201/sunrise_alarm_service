@@ -164,3 +164,12 @@ class TestLightUtils:
         light_off_program(self.LIGHT_ON, self.API_KEY, self.GROUP_ID)
 
         mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, True, 0)
+
+    def test_light_off_program__should_not_turn_light_to_min_when_before_day_timer_on_wrong_day(self, mock_api, mock_date):
+        mock_date.datetime.now.return_value = self.SUNDAY
+        mock_date.datetime.combine.side_effect = datetime.datetime.combine
+        mock_date.timedelta.side_effect = datetime.timedelta
+        mock_date.date.today.return_value = datetime.datetime.today()
+        light_off_program(self.LIGHT_ON, self.API_KEY, self.GROUP_ID)
+
+        mock_api.assert_not_called()
