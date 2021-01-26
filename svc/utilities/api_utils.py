@@ -21,6 +21,7 @@ def get_light_api_key(username, password):
         return None
 
 
+# TODO: try catch for errors!!!
 def set_light_groups(api_key, group_id, state, brightness=None):
     url = Settings.get_instance().light_base_url + '/%s/groups/%s/action' % (api_key, group_id)
     request = {'on': state}
