@@ -32,9 +32,9 @@ class TestLightState:
         mock_thread.assert_called_with(mock.ANY, Automation.TIME.TEN_SECONDS)
 
     def test_add_light_alarm__should_not_create_thread_when_it_already_exists(self, mock_api, mock_thread):
-        alarm = LightAlarmState(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS, self.TASK_TYPE)
+        alarm = LightAlarmState(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS)
         self.STATE.LIGHT_ALARMS.append(alarm)
-        self.STATE.add_light_alarm(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS)
+        self.STATE.add_light_alarm(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS, self.TASK_TYPE)
 
         mock_thread.assert_not_called()
 

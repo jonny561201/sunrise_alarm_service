@@ -5,7 +5,7 @@ from svc.constants.settings_state import Settings
 from svc.constants.thread_state import LightAlarmState
 from svc.utilities.api_utils import get_light_api_key
 from svc.utilities.event_utils import create_thread
-from svc.utilities.light_utils import run_light_program
+from svc.utilities.light_utils import light_alarm_program
 
 
 class LightState:
@@ -23,7 +23,7 @@ class LightState:
         if not any(alarm.THREAD_ID == task_id for alarm in self.LIGHT_ALARMS):
             logging.info(f'-----added new light alarm id: {task_id}-----')
             alarm = LightAlarmState(task_id, light_group_id, alarm_time, alarm_days)
-            alarm.ACTIVE_THREAD = create_thread(lambda: run_light_program(alarm, self.get_light_api_key(), light_group_id), Automation.TIME.TEN_SECONDS)
+            alarm.ACTIVE_THREAD = create_thread(lambda: light_alarm_program(alarm, self.get_light_api_key(), light_group_id), Automation.TIME.TEN_SECONDS)
             alarm.ACTIVE_THREAD.start()
             self.LIGHT_ALARMS.append(alarm)
 
