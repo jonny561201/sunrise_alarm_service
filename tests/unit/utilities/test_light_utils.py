@@ -3,7 +3,7 @@ import datetime
 from mock import patch
 
 from svc.constants.lights_state import LightAlarmState
-from svc.utilities.light_utils import run_light_program
+from svc.utilities.light_utils import light_alarm_program, light_on_program
 
 
 @patch('svc.utilities.light_utils.datetime')
@@ -81,3 +81,11 @@ class TestLightUtils:
         light_alarm_program(self.LIGHTS, self.API_KEY, self.GROUP_ID)
 
         mock_api.assert_not_called()
+
+    def test_light_on_program__should_turn_light_to_max_when_after_timer_on_matching_day(self, mock_api, mock_date):
+        mock_date.datetime.now.return_value = self.MONDAY
+        light_on_program(self.LIGHTS, self.API_KEY, self.GROUP_ID)
+
+        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, True, 0)
+
+

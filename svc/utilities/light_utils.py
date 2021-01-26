@@ -18,3 +18,7 @@ def __is_within_alarm(light_state, day_name, now):
     return day_name in light_state.ALARM_DAYS \
            and light_state.ALARM_START_TIME <= now.time() < light_state.ALARM_STOP_TIME \
            and light_state.ALARM_COUNTER <= 254
+
+
+def light_on_program(alarm_state, api_key, group_id):
+    set_light_groups(api_key, group_id, True, 0)
