@@ -22,7 +22,7 @@ def get_light_api_key(username, password):
 
 
 def set_light_groups(api_key, group_id, state, brightness=None):
-    url = Settings.get_instance().light_base_url + '/%s/groups/%s/action' % (api_key, group_id)
+    url = f'{Settings.get_instance().light_base_url}/{api_key}/groups/{group_id}/action'
     request = {'on': state}
     if brightness is not None:
         request['on'] = True
