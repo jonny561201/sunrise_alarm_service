@@ -26,7 +26,7 @@ def light_on_program(alarm_state, api_key, group_id):
     one_minute_after = (datetime.datetime.combine(datetime.date.today(), alarm_state.ALARM_START_TIME) + datetime.timedelta(minutes=1)).time()
     current_time = now.time()
     if __is_within_on_time(day_name, alarm_state, current_time, one_minute_after):
-        set_light_groups(api_key, group_id, True, 0)
+        set_light_groups(api_key, group_id, True, 255)
         alarm_state.TRIGGERED = True
     if alarm_state.TRIGGERED and current_time > one_minute_after:
         alarm_state.TRIGGERED = False
@@ -37,3 +37,7 @@ def __is_within_on_time(day_name, alarm_state, current_time, one_minute_after):
            and current_time >= alarm_state.ALARM_START_TIME \
            and not alarm_state.TRIGGERED \
            and current_time < one_minute_after
+
+
+def light_off_program(alarm_state, api_key, group_id):
+    set_light_groups(api_key, group_id, True, 0)

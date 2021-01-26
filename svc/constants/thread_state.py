@@ -22,7 +22,7 @@ class LightAlarmState(ThreadState):
         self.ALARM_STOP_TIME = (datetime.datetime.combine(datetime.date.today(), alarm_time) + datetime.timedelta(minutes=+10)).time()
 
 
-class LightOnState(ThreadState):
+class LightOnOffState(ThreadState):
     TRIGGERED = False
     ALARM_START_TIME = None
     ALARM_DAYS = None

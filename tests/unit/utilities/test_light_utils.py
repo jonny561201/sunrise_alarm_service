@@ -3,8 +3,8 @@ import datetime
 from mock import patch
 
 from svc.constants.lights_state import LightAlarmState
-from svc.constants.thread_state import LightOnState
-from svc.utilities.light_utils import light_alarm_program, light_on_program
+from svc.constants.thread_state import LightOnOffState
+from svc.utilities.light_utils import light_alarm_program, light_on_program, light_off_program
 
 
 @patch('svc.utilities.light_utils.datetime')
@@ -21,7 +21,7 @@ class TestLightUtils:
     WEDNESDAY = datetime.datetime(2020, 11, 4, 7, 34, 0)
 
     def setup_method(self):
-        self.LIGHT_ON = LightOnState(self.TASK_ID, self.START_TIME, self.DAYS)
+        self.LIGHT_ON = LightOnOffState(self.TASK_ID, self.START_TIME, self.DAYS)
         self.ALARM = LightAlarmState(self.TASK_ID, self.GROUP_ID, self.START_TIME, self.DAYS)
         self.ALARM.ALARM_COUNTER = 0
         self.ALARM.ALARM_START_TIME = self.START_TIME
@@ -92,7 +92,7 @@ class TestLightUtils:
         mock_date.date.today.return_value = datetime.datetime.today()
         light_on_program(self.LIGHT_ON, self.API_KEY, self.GROUP_ID)
 
-        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, True, 0)
+        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, True, 255)
 
     def test_light_on_program__should_not_turn_light_to_max_when_after_timer_on_wrong_day(self, mock_api, mock_date):
         mock_date.datetime.now.return_value = self.SUNDAY
@@ -121,7 +121,7 @@ class TestLightUtils:
         mock_date.datetime.now.return_value = exact_time
         light_on_program(self.LIGHT_ON, self.API_KEY, self.GROUP_ID)
 
-        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, True, 0)
+        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, True, 255)
         assert self.LIGHT_ON.TRIGGERED is True
 
     def test_light_on_program__should_not_turn_on_light_after_already_turning_on(self, mock_api, mock_date):
@@ -155,3 +155,12 @@ class TestLightUtils:
         light_on_program(self.LIGHT_ON, self.API_KEY, self.GROUP_ID)
 
         mock_api.assert_not_called()
+
+    def test_light_off_program__should_turn_light_to_min_when_after_timer_on_matching_day(self, mock_api, mock_date):
+        mock_date.datetime.now.return_value = self.MONDAY + datetime.timedelta(minutes=-4)
+        mock_date.datetime.combine.side_effect = datetime.datetime.combine
+        mock_date.timedelta.side_effect = datetime.timedelta
+        mock_date.date.today.return_value = datetime.datetime.today()
+        light_off_program(self.LIGHT_ON, self.API_KEY, self.GROUP_ID)
+
+        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, True, 0)
