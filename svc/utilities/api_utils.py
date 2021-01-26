@@ -1,4 +1,5 @@
 import base64
+import logging
 from datetime import time
 import json
 
@@ -20,14 +21,17 @@ def get_light_api_key(username, password):
         return None
 
 
+# TODO: try catch for errors!!!
 def set_light_groups(api_key, group_id, state, brightness=None):
     url = Settings.get_instance().light_base_url + '/%s/groups/%s/action' % (api_key, group_id)
     request = {'on': state}
     if brightness is not None:
         request['on'] = True
         request['bri'] = brightness
-
-    requests.put(url, data=json.dumps(request))
+    try:
+        requests.put(url, data=json.dumps(request))
+    except Exception:
+        logging.error('Set Light Groups Put request threw an exception')
 
 
 def get_light_tasks_by_user(user_id):

@@ -71,6 +71,10 @@ class TestLightApiRequests:
 
         mock_requests.put.assert_called_with(expected_url, data=ANY)
 
+    def test_set_light_groups__should_swallow_exception_and_keep_progressing(self, mock_requests):
+        mock_requests.put.side_effect = TimeoutError()
+        set_light_groups(self.API_KEY, 2, True, 255)
+
     def test_set_light_groups__should_call_state_with_on_off_set(self, mock_requests):
         state = False
         set_light_groups(self.API_KEY, 2, state)
