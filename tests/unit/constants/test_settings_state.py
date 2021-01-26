@@ -9,17 +9,17 @@ class TestState:
     LIGHT_API_USER = 'lightUser'
     LIGHT_API_PASSWORD = 'lightPass'
     HUB_BASE_URL = 'http://www.fakeurl.com'
+    LIGHT_BASE_URL = 'http://www.otherurl.com'
 
     def setup_method(self):
-        os.environ.update({'LIGHT_API_USERNAME': self.LIGHT_API_USER,
-                           'LIGHT_API_PASSWORD': self.LIGHT_API_PASSWORD,
-                           'USER_ID': self.USER_ID,
-                           'HUB_BASE_URL': self.HUB_BASE_URL})
+        os.environ.update({'LIGHT_API_USERNAME': self.LIGHT_API_USER, 'LIGHT_API_PASSWORD': self.LIGHT_API_PASSWORD,
+                           'USER_ID': self.USER_ID, 'HUB_BASE_URL': self.HUB_BASE_URL, 'LIGHT_BASE_URL': self.LIGHT_BASE_URL})
         self.SETTINGS = Settings.get_instance()
 
     def teardown_method(self):
         os.environ.pop('USER_ID')
         os.environ.pop('HUB_BASE_URL')
+        os.environ.pop('LIGHT_BASE_URL')
         os.environ.pop('LIGHT_API_USERNAME')
         os.environ.pop('LIGHT_API_PASSWORD')
 
@@ -38,6 +38,10 @@ class TestState:
     def test_hub_base_url__should_return_env_var_value(self):
         self.SETTINGS.dev_mode = False
         assert self.SETTINGS.hub_base_url == self.HUB_BASE_URL
+
+    def test_light_base_url__should_return_env_var_value(self):
+        self.SETTINGS.dev_mode = False
+        assert self.SETTINGS.light_base_url == self.LIGHT_BASE_URL
 
     def test_light_api_user__should_pull_from_dictionary_if_dev_mode(self):
         light_api_user = 'other_light_user'

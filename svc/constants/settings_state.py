@@ -30,6 +30,10 @@ class Settings:
     def hub_base_url(self):
         return self.settings.get('HubBaseUrl') if self.dev_mode else os.environ.get('HUB_BASE_URL')
 
+    @property
+    def light_base_url(self):
+        return os.environ.get('LIGHT_BASE_URL')
+
     @staticmethod
     def get_instance():
         if Settings.__instance is None:
