@@ -33,6 +33,15 @@ def set_light_groups(api_key, group_id, state, brightness=None):
         logging.error('Set Light Groups Put request threw an exception')
 
 
+def get_light_groups(api_key):
+    url = f'{Settings.get_instance().light_base_url}/{api_key}/groups'
+    try:
+        response = requests.get(url)
+        return response.json()
+    except Exception:
+        return None
+
+
 def get_light_tasks_by_user(user_id):
     base_url = Settings.get_instance().hub_base_url
     try:

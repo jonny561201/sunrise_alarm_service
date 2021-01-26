@@ -7,7 +7,7 @@ from requests import ReadTimeout, Response
 
 from svc.constants.home_automation import Automation
 from svc.constants.settings_state import Settings
-from svc.utilities.api_utils import set_light_groups, get_light_api_key, get_light_tasks_by_user
+from svc.utilities.api_utils import set_light_groups, get_light_api_key, get_light_tasks_by_user, get_light_groups
 
 
 @patch('svc.utilities.api_utils.requests')
@@ -128,6 +128,23 @@ class TestLightApiRequests:
         actual = get_light_tasks_by_user(self.USER_ID)
 
         assert actual == []
+
+    def test_get_light_groups__should_make_rest_call_using_url(self, mock_requests):
+        get_light_groups(self.API_KEY)
+        mock_requests.get.assert_called_with(f'{self.BASE_URL}/{self.API_KEY}/groups')
+
+    def test_get_light_groups__should_return_response_from_api_call(self, mock_requests):
+        expected_response = {'testStuff': 'response stuff'}
+        mock_requests.get.return_value = self.__create_response(data=expected_response)
+        actual = get_light_groups(self.API_KEY)
+
+        assert actual == expected_response
+
+    def test_get_light_groups__should_return_none_when_exception(self, mock_requests):
+        mock_requests.get.side_effect = TimeoutError()
+        actual = get_light_groups(self.API_KEY)
+
+        assert actual is None
 
     @staticmethod
     def __create_response(status=200, data=None):
