@@ -194,3 +194,13 @@ class TestLightUtils:
 
         mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, True, 0)
         assert self.LIGHT_ON.TRIGGERED is True
+
+    def test_light_off_program__should_not_turn_off_light_after_already_turning_off(self, mock_api, mock_date):
+        self.LIGHT_ON.TRIGGERED = True
+        mock_date.datetime.combine.side_effect = datetime.datetime.combine
+        mock_date.timedelta.side_effect = datetime.timedelta
+        mock_date.date.today.return_value = datetime.datetime.today()
+        mock_date.datetime.now.return_value = self.MONDAY
+        light_off_program(self.LIGHT_ON, self.API_KEY, self.GROUP_ID)
+
+        mock_api.assert_not_called()

@@ -43,6 +43,6 @@ def light_off_program(alarm_state, api_key, group_id):
     now = datetime.datetime.now()
     day_name = now.strftime('%a')
     current_time = now.time()
-    if day_name in alarm_state.ALARM_DAYS and current_time >= alarm_state.ALARM_START_TIME:
+    if day_name in alarm_state.ALARM_DAYS and current_time >= alarm_state.ALARM_START_TIME and not alarm_state.TRIGGERED:
         set_light_groups(api_key, group_id, True, 0)
         alarm_state.TRIGGERED = True
