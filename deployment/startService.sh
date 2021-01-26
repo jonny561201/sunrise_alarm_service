@@ -72,11 +72,14 @@ function createFile {
     read USER_ID
     echo -e "Enter HUB_BASE_URL:${WHITE}"
     read HUB_BASE_URL
+    echo -e "Enter LIGHT_BASE_URL:${WHITE}"
+    read LIGHT_BASE_URL
 
     echo "LIGHT_API_USERNAME=${LIGHT_USER}" > serviceEnvVariables
     echo "LIGHT_API_PASSWORD=${LIGHT_PASS}" >> serviceEnvVariables
     echo "USER_ID=${USER_ID}" >> serviceEnvVariables
     echo "HUB_BASE_URL=${HUB_BASE_URL}" >> serviceEnvVariables
+    echo "LIGHT_BASE_URL=${LIGHT_BASE_URL}" >> serviceEnvVariables
 }
 
 
