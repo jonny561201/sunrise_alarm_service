@@ -32,7 +32,7 @@ class Settings:
 
     @property
     def light_base_url(self):
-        return os.environ.get('LIGHT_BASE_URL')
+        return self.settings.get('LightBaseUrl') if self.dev_mode else os.environ.get('LIGHT_BASE_URL')
 
     @staticmethod
     def get_instance():

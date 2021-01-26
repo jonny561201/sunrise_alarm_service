@@ -66,3 +66,9 @@ class TestState:
         self.SETTINGS.dev_mode = True
         self.SETTINGS.settings = {'HubBaseUrl': base_url}
         assert self.SETTINGS.hub_base_url == base_url
+
+    def test_light_base_url__should_pull_from_dictionary_if_dev_mode(self):
+        base_url = 'http://www.other_light_url.com'
+        self.SETTINGS.dev_mode = True
+        self.SETTINGS.settings = {'LightBaseUrl': base_url}
+        assert self.SETTINGS.light_base_url == base_url
