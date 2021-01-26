@@ -94,4 +94,9 @@ class TestLightUtils:
 
         mock_api.assert_not_called()
 
+    def test_light_on_program__should_not_turn_on_light_just_before_timer(self, mock_api, mock_date):
+        before_time = datetime.time(7, 29, 59)
+        mock_date.datetime.now.return_value = before_time
+        light_on_program(self.LIGHTS, self.API_KEY, self.GROUP_ID)
 
+        mock_api.assert_not_called()
