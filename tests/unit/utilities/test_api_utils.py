@@ -1,4 +1,5 @@
 import json
+import os
 from datetime import time
 
 from mock import patch, ANY
@@ -14,9 +15,18 @@ class TestLightApiRequests:
     USERNAME = 'fake username'
     PASSWORD = 'fake password'
     BASE_URL = 'http://localhost:80/api'
+    HUB_BASE_URL = 'http://hubbaseurl.com'
     API_KEY = 'fake api key'
     LIGHT_API = None
     USER_ID = 'def456'
+
+    def setup_method(self):
+        self.SETTINGS = Settings.get_instance().dev_mode = False
+        os.environ.update({'LIGHT_BASE_URL': self.BASE_URL, 'HUB_BASE_URL': self.HUB_BASE_URL})
+
+    def teardown_method(self):
+        os.environ.pop('LIGHT_BASE_URL')
+        os.environ.pop('HUB_BASE_URL')
 
     def test_get_light_api_key__should_call_requests_with_url(self, mock_requests):
         get_light_api_key(self.USERNAME, self.PASSWORD)
@@ -84,11 +94,9 @@ class TestLightApiRequests:
         mock_requests.put.assert_called_with(ANY, data=expected_request)
 
     def test_get_light_tasks_by_user__should_make_rest_call_using_url(self, mock_requests):
-        settings = Settings.get_instance()
-        settings.settings = {'HubBaseUrl': self.BASE_URL}
         get_light_tasks_by_user(self.USER_ID)
 
-        mock_requests.get.assert_called_with(f'{self.BASE_URL}/userId/{self.USER_ID}/tasks', timeout=5)
+        mock_requests.get.assert_called_with(f'{self.HUB_BASE_URL}/userId/{self.USER_ID}/tasks', timeout=5)
 
     def test_get_light_tasks_by_user__should_return_response(self, mock_requests):
         response = [{'alarm_light_group': '1', 'alarm_time': None}]
