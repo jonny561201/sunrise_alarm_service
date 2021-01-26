@@ -25,8 +25,15 @@ class Time:
     TEN_MINUTE = 600
 
 
+class Light:
+    TURN_ON = 'turn on'
+    TURN_OFF = 'turn off'
+    SUNRISE = 'sunrise alarm'
+
+
 class Automation:
     APP_NAME = "Soaring Leaf Home Automation"
     HVAC = Hvac
     TIME = Time
     GARAGE = Garage
+    LIGHT = Light
