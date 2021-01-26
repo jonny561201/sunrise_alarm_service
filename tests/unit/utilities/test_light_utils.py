@@ -107,3 +107,10 @@ class TestLightUtils:
         light_on_program(self.LIGHTS, self.API_KEY, self.GROUP_ID)
 
         mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, True, 0)
+
+    def test_light_on_program__should_not_turn_on_light_after_already_turning_on(self, mock_api, mock_date):
+        self.LIGHTS.TRIGGERED = True
+        mock_date.datetime.now.return_value = self.MONDAY
+        light_on_program(self.LIGHTS, self.API_KEY, self.GROUP_ID)
+
+        mock_api.assert_not_called()
