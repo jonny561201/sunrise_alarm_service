@@ -8,7 +8,7 @@ from svc.utilities.light_utils import light_alarm_program, light_on_program, lig
 
 
 @patch('svc.utilities.light_utils.datetime')
-@patch('svc.utilities.light_utils.update_light_groups')
+@patch('svc.utilities.light_utils.set_light_groups')
 class TestLightUtils:
     GROUP_ID = '3'
     TASK_ID = 'abc123'

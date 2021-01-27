@@ -1,6 +1,6 @@
 import datetime
 
-from svc.services.api_service import update_light_groups
+from svc.utilities.api_utils import set_light_groups
 
 
 # TODO: check to see if light is currently on before trying to turn on???
@@ -9,7 +9,7 @@ def light_alarm_program(alarm_state, api_key, group_id):
     day_name = now.strftime('%a')
     if __is_within_alarm(alarm_state, day_name, now):
         alarm_state.ALARM_COUNTER += 2
-        update_light_groups(api_key, group_id, True, alarm_state.ALARM_COUNTER)
+        set_light_groups(api_key, group_id, True, alarm_state.ALARM_COUNTER)
     elif alarm_state.ALARM_COUNTER != 0:
         alarm_state.ALARM_COUNTER = 0
 
@@ -25,7 +25,7 @@ def light_on_program(alarm_state, api_key, group_id):
     one_minute_after = (datetime.datetime.combine(datetime.date.today(), alarm_state.ALARM_START_TIME) + datetime.timedelta(minutes=1)).time()
     current_time = now.time()
     if __is_within_on_time(now.strftime('%a'), alarm_state, current_time, one_minute_after):
-        update_light_groups(api_key, group_id, True)
+        set_light_groups(api_key, group_id, True)
         alarm_state.TRIGGERED = True
     if alarm_state.TRIGGERED and current_time > one_minute_after:
         alarm_state.TRIGGERED = False
@@ -36,7 +36,7 @@ def light_off_program(alarm_state, api_key, group_id):
     current_time = now.time()
     one_minute_after = (datetime.datetime.combine(datetime.date.today(), alarm_state.ALARM_START_TIME) + datetime.timedelta(minutes=1)).time()
     if __is_within_on_time(now.strftime('%a'), alarm_state, current_time, one_minute_after):
-        update_light_groups(api_key, group_id, False)
+        set_light_groups(api_key, group_id, False)
         alarm_state.TRIGGERED = True
     if alarm_state.TRIGGERED and current_time > one_minute_after:
         alarm_state.TRIGGERED = False
