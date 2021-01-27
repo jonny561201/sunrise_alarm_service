@@ -46,3 +46,8 @@ class TestApiService:
         update_light_groups(self.API_KEY, self.GROUP_ID, self.ON_STATE)
 
         mock_api.set_light_groups.assert_called_with(self.API_KEY, self.GROUP_ID, self.ON_STATE, 255)
+
+    def test_update_light_groups__should_call_set_light_groups_once_when_not_all_groups_and_off_requested(self, mock_api):
+        update_light_groups(self.API_KEY, self.GROUP_ID, self.OFF_STATE)
+
+        mock_api.set_light_groups.assert_called_with(self.API_KEY, self.GROUP_ID, self.OFF_STATE, 0)
