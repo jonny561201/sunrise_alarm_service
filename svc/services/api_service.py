@@ -7,3 +7,5 @@ def update_light_groups(api_key, group_id, on):
         group_ids = [group_id for group_id, data in groups.items()]
         for id in group_ids:
             api_utils.set_light_groups(api_key, id, on, 255 if on else 0)
+    else:
+        api_utils.set_light_groups(api_key, group_id, on, 255)
