@@ -1,3 +1,5 @@
+import time
+
 from svc.utilities import api_utils
 
 
@@ -7,6 +9,7 @@ def update_light_groups(api_key, group_id, on, brightness=None):
         group_ids = [group_id for group_id, data in groups.items()]
         for g_id in group_ids:
             api_utils.set_light_groups(api_key, g_id, on, __calculate_brightness(on, brightness))
+            time.sleep(1.0)
     else:
         api_utils.set_light_groups(api_key, group_id, on, __calculate_brightness(on, brightness))
 
