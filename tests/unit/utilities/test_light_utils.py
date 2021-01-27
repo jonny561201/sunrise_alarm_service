@@ -8,7 +8,7 @@ from svc.utilities.light_utils import light_alarm_program, light_on_program, lig
 
 
 @patch('svc.utilities.light_utils.datetime')
-@patch('svc.utilities.light_utils.set_light_groups')
+@patch('svc.utilities.light_utils.update_light_groups')
 class TestLightUtils:
     GROUP_ID = '3'
     TASK_ID = 'abc123'
@@ -92,7 +92,7 @@ class TestLightUtils:
         mock_date.date.today.return_value = datetime.datetime.today()
         light_on_program(self.LIGHT_ON, self.API_KEY, self.GROUP_ID)
 
-        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, True, 255)
+        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, True)
 
     def test_light_on_program__should_not_turn_light_to_max_when_after_timer_on_wrong_day(self, mock_api, mock_date):
         mock_date.datetime.now.return_value = self.SUNDAY
@@ -121,7 +121,7 @@ class TestLightUtils:
         mock_date.datetime.now.return_value = exact_time
         light_on_program(self.LIGHT_ON, self.API_KEY, self.GROUP_ID)
 
-        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, True, 255)
+        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, True)
         assert self.LIGHT_ON.TRIGGERED is True
 
     def test_light_on_program__should_not_turn_on_light_after_already_turning_on(self, mock_api, mock_date):
@@ -163,7 +163,7 @@ class TestLightUtils:
         mock_date.date.today.return_value = datetime.datetime.today()
         light_off_program(self.LIGHT_ON, self.API_KEY, self.GROUP_ID)
 
-        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, True, 0)
+        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, False)
 
     def test_light_off_program__should_not_turn_light_to_min_when_before_day_timer_on_wrong_day(self, mock_api, mock_date):
         mock_date.datetime.now.return_value = self.SUNDAY
@@ -192,7 +192,7 @@ class TestLightUtils:
         mock_date.datetime.now.return_value = exact_time
         light_off_program(self.LIGHT_ON, self.API_KEY, self.GROUP_ID)
 
-        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, True, 0)
+        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, False)
         assert self.LIGHT_ON.TRIGGERED is True
 
     def test_light_off_program__should_not_turn_off_light_after_already_turning_off(self, mock_api, mock_date):
