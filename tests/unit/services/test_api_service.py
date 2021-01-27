@@ -51,3 +51,14 @@ class TestApiService:
         update_light_groups(self.API_KEY, self.GROUP_ID, self.OFF_STATE)
 
         mock_api.set_light_groups.assert_called_with(self.API_KEY, self.GROUP_ID, self.OFF_STATE, 0)
+
+    def test_update_light_groups__should_call_set_light_groups_with_brightness_when_provided(self, mock_api):
+        new_brightness = 34
+        update_light_groups(self.API_KEY, self.GROUP_ID, self.ON_STATE, new_brightness)
+
+        mock_api.set_light_groups.assert_called_with(self.API_KEY, self.GROUP_ID, self.ON_STATE, new_brightness)
+
+    def test_update_light_groups__should_call_set_light_groups_with_zero_brightness_when_off_and_provided_brightness(self, mock_api):
+        update_light_groups(self.API_KEY, self.GROUP_ID, self.OFF_STATE, 78)
+
+        mock_api.set_light_groups.assert_called_with(self.API_KEY, self.GROUP_ID, self.OFF_STATE, 0)
