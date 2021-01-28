@@ -28,7 +28,7 @@ def light_on_program(alarm_state, api_key, group_id):
     if __is_within_on_time(now.strftime('%a'), alarm_state, current_time, one_minute_after):
         logging.info('-----Attempting to turn on light-----')
         logging.info(f'Current time: {current_time}  Group ID: {group_id}')
-        set_light_groups(api_key, group_id, True)
+        set_light_groups(api_key, group_id, True, 255)
         alarm_state.TRIGGERED = True
     if alarm_state.TRIGGERED and current_time > one_minute_after:
         alarm_state.TRIGGERED = False
@@ -43,7 +43,7 @@ def light_off_program(alarm_state, api_key, group_id):
     if __is_within_on_time(now.strftime('%a'), alarm_state, current_time, one_minute_after):
         logging.info('-----Attempting to turn on light-----')
         logging.info(f'Current time: {current_time}  Group ID: {group_id}')
-        set_light_groups(api_key, group_id, False)
+        set_light_groups(api_key, group_id, False, 0)
         alarm_state.TRIGGERED = True
     if alarm_state.TRIGGERED and current_time > one_minute_after:
         alarm_state.TRIGGERED = False
