@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 EnvironmentFile=/home/pi/sunrise_alarm_service/serviceEnvVariables
-ExecStart=/usr/bin/python3 -u app.py
+ExecStart=/home/pi/sunrise_alarm_service/venv/bin/python -u app.py
 WorkingDirectory=/home/pi/sunrise_alarm_service
 Restart=always
 User=pi
