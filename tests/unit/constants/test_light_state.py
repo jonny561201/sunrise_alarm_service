@@ -36,7 +36,7 @@ class TestLightState:
     def test_add_light_alarm__should_create_the_light_thread_for_turn_on(self, mock_light, mock_api, mock_thread):
         self.STATE.add_light_alarm(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS, 'turn on')
 
-        mock_thread.assert_called_with(mock.ANY, Automation.TIME.TWENTY_SECONDS)
+        mock_thread.assert_called_with(mock.ANY, Automation.TIME.TEN_SECONDS)
         mock_light.assert_called()
 
     def test_add_light_alarm__should_store_the_thread_on_the_alarm_list_for_turn_on(self, mock_api, mock_thread):
@@ -55,7 +55,7 @@ class TestLightState:
     def test_add_light_alarm__should_create_the_light_thread_for_turn_off(self, mock_light, mock_api, mock_thread):
         self.STATE.add_light_alarm(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS, 'turn off')
 
-        mock_thread.assert_called_with(mock.ANY, Automation.TIME.TWENTY_SECONDS)
+        mock_thread.assert_called_with(mock.ANY, Automation.TIME.TEN_SECONDS)
         mock_light.assert_called()
 
     def test_add_light_alarm__should_store_the_thread_on_the_alarm_list_for_turn_off(self, mock_api, mock_thread):
