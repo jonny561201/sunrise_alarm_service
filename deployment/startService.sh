@@ -19,6 +19,18 @@ function cloneServiceFiles {
     fi
 }
 
+function startVirtualEnv {
+    if [[ ! -d "/home/pi/sunrise_alarm_service/venv" ]]; then
+      echo -e "${YELLOW}----------Creating VirtualEnv----------${WHITE}"
+      pushd "/home/pi/sunrise_alarm_service"
+      pip3 install virtualenv
+      virtualenv venv
+      popd
+    fi
+      echo -e "${YELLOW}---------------starting VirtualEnv---------------${WHITE}"
+      source ./venv/bin/activate
+}
+
 function installDependencies {
     echo -e "${YELLOW}---------------Installing Dependencies---------------${WHITE}"
     pip3 install -Ur requirements.txt
@@ -85,6 +97,7 @@ function createFile {
 
 stopService
 cloneServiceFiles
+startVirtualEnv
 installDependencies
 createEnvironmentVariableFile
 copyServiceFile
