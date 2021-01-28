@@ -23,12 +23,12 @@ function startVirtualEnv {
     if [[ ! -d "/home/pi/sunrise_alarm_service/venv" ]]; then
       echo -e "${YELLOW}----------Creating VirtualEnv----------${WHITE}"
       pushd "/home/pi/sunrise_alarm_service"
-      pip3 install virtualenv
+      sudo pip3 install virtualenv
       virtualenv venv
       popd
     fi
       echo -e "${YELLOW}---------------starting VirtualEnv---------------${WHITE}"
-      source ./venv/bin/activate
+      source /home/pi/sunrise_alarm_service/venv/bin/activate
 }
 
 function installDependencies {
