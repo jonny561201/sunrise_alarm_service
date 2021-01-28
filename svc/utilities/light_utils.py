@@ -1,4 +1,5 @@
 import datetime
+import logging
 
 from svc.utilities.api_utils import set_light_groups
 
@@ -25,10 +26,14 @@ def light_on_program(alarm_state, api_key, group_id):
     one_minute_after = (datetime.datetime.combine(datetime.date.today(), alarm_state.ALARM_START_TIME) + datetime.timedelta(minutes=1)).time()
     current_time = now.time()
     if __is_within_on_time(now.strftime('%a'), alarm_state, current_time, one_minute_after):
+        logging.info('-----Attempting to turn on light-----')
+        logging.info(f'Current time: {current_time}  Group ID: {group_id}')
         set_light_groups(api_key, group_id, True)
         alarm_state.TRIGGERED = True
     if alarm_state.TRIGGERED and current_time > one_minute_after:
         alarm_state.TRIGGERED = False
+        logging.info(f'Resetting Trigger Time: {current_time}')
+        logging.info('-----Attempting to reset trigger a minute later')
 
 
 def light_off_program(alarm_state, api_key, group_id):
@@ -36,10 +41,14 @@ def light_off_program(alarm_state, api_key, group_id):
     current_time = now.time()
     one_minute_after = (datetime.datetime.combine(datetime.date.today(), alarm_state.ALARM_START_TIME) + datetime.timedelta(minutes=1)).time()
     if __is_within_on_time(now.strftime('%a'), alarm_state, current_time, one_minute_after):
+        logging.info('-----Attempting to turn on light-----')
+        logging.info(f'Current time: {current_time}  Group ID: {group_id}')
         set_light_groups(api_key, group_id, False)
         alarm_state.TRIGGERED = True
     if alarm_state.TRIGGERED and current_time > one_minute_after:
         alarm_state.TRIGGERED = False
+        logging.info(f'Resetting Trigger Time: {current_time}')
+        logging.info('-----Attempting to reset trigger a minute later')
 
 
 def __is_within_on_time(day_name, alarm_state, current_time, one_minute_after):
