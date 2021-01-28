@@ -29,12 +29,12 @@ class LightState:
                 self.LIGHT_ALARMS.append(alarm)
             elif task_type == Automation.LIGHT.TURN_ON:
                 alarm = LightOnOffState(task_id, alarm_time, alarm_days)
-                alarm.ACTIVE_THREAD = create_thread(lambda: light_on_program(alarm, self.get_light_api_key(), light_group_id), Automation.TIME.TWENTY_SECONDS)
+                alarm.ACTIVE_THREAD = create_thread(lambda: light_on_program(alarm, self.get_light_api_key(), light_group_id), Automation.TIME.TEN_SECONDS)
                 alarm.ACTIVE_THREAD.start()
                 self.LIGHT_ALARMS.append(alarm)
             elif task_type == Automation.LIGHT.TURN_OFF:
                 alarm = LightOnOffState(task_id, alarm_time, alarm_days)
-                alarm.ACTIVE_THREAD = create_thread(lambda: light_off_program(alarm, self.get_light_api_key(), light_group_id), Automation.TIME.TWENTY_SECONDS)
+                alarm.ACTIVE_THREAD = create_thread(lambda: light_off_program(alarm, self.get_light_api_key(), light_group_id), Automation.TIME.TEN_SECONDS)
                 alarm.ACTIVE_THREAD.start()
                 self.LIGHT_ALARMS.append(alarm)
 
