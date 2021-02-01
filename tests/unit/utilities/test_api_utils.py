@@ -67,34 +67,32 @@ class TestLightApiRequests:
     def test_set_light_groups__should_call_state_url(self, mock_requests):
         group_id = 1
         expected_url = self.BASE_URL + '/%s/groups/%s/action' % (self.API_KEY, group_id)
-        set_light_groups(self.API_KEY, group_id, True)
+        set_light_groups(self.API_KEY, group_id, 0)
 
         mock_requests.put.assert_called_with(expected_url, data=ANY)
 
     def test_set_light_groups__should_swallow_exception_and_keep_progressing(self, mock_requests):
         mock_requests.put.side_effect = TimeoutError()
-        set_light_groups(self.API_KEY, 2, True, 255)
+        set_light_groups(self.API_KEY, 2, 255)
 
     def test_set_light_groups__should_call_state_with_on_off_set(self, mock_requests):
-        state = False
-        set_light_groups(self.API_KEY, 2, state)
+        set_light_groups(self.API_KEY, 2, 0)
 
-        expected_request = json.dumps({'on': state})
+        expected_request = json.dumps({'on': False, 'transitiontime': 0})
         mock_requests.put.assert_called_with(ANY, data=expected_request)
 
     def test_set_light_groups__should_call_state_with_dimmer_value(self, mock_requests):
-        state = True
         brightness = 233
-        set_light_groups(self.API_KEY, 1, state, brightness)
+        set_light_groups(self.API_KEY, 1, brightness)
 
-        expected_request = json.dumps({'on': state, 'bri': brightness})
+        expected_request = json.dumps({'on': True, 'transitiontime': 0, 'bri': brightness})
         mock_requests.put.assert_called_with(ANY, data=expected_request)
 
     def test_set_light_groups__should_call_state_with_on_set_true_if_dimmer_value(self, mock_requests):
         brightness = 155
-        set_light_groups(self.API_KEY, 1, False, brightness)
+        set_light_groups(self.API_KEY, 1, brightness)
 
-        expected_request = json.dumps({'on': True, 'bri': brightness})
+        expected_request = json.dumps({'on': True, 'transitiontime': 0, 'bri': brightness})
         mock_requests.put.assert_called_with(ANY, data=expected_request)
 
     def test_get_light_tasks_by_user__should_make_rest_call_using_url(self, mock_requests):

@@ -21,12 +21,16 @@ def get_light_api_key(username, password):
         return None
 
 
-def set_light_groups(api_key, group_id, state, brightness=None):
+def set_light_groups(api_key, group_id, brightness, hue=None, temp=None, sat=255, trans=0):
     url = f'{Settings.get_instance().light_base_url}/{api_key}/groups/{group_id}/action'
-    request = {'on': state}
-    if brightness is not None:
-        request['on'] = True
+    request = {'on': False if brightness == 0 else True, 'transitiontime': trans}
+    if brightness != 0:
         request['bri'] = brightness
+    if hue is not None:
+        request['hue'] = hue
+        request['sat'] = sat
+    if temp is not None:
+        request['ct'] = temp
     try:
         requests.put(url, data=json.dumps(request))
     except Exception:
