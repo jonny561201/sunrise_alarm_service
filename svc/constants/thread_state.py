@@ -7,7 +7,9 @@ class ThreadState:
 
 
 class LightAlarmState(ThreadState):
-    ALARM_COUNTER = 0
+    HUE = 0
+    BRIGHTNESS = 0
+    SATURATION = 255
     ALARM_START_TIME = None
     ALARM_STOP_TIME = None
     ALARM_DAYS = None
