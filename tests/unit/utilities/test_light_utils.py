@@ -28,17 +28,24 @@ class TestLightUtils:
         self.ALARM.ALARM_START_TIME = self.START_TIME
         self.ALARM.ALARM_STOP_TIME = self.END_TIME
 
-    def test_light_alarm_program__should_call_set_light_group_if_after_start_time(self, mock_api, mock_date, mock_time):
+    def test_light_alarm_program__should_call_set_light_group_with_hue_and_zero_bri_first_time_if_after_start_time(self, mock_api, mock_date, mock_time):
         mock_date.datetime.now.return_value = datetime.datetime(2020, 11, 2, 7, 31, 0)
         light_alarm_program(self.ALARM, self.API_KEY, self.GROUP_ID)
 
-        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, 4, hue=3008, sat=255)
+        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, 0, hue=3008, sat=255)
+
+    def test_light_alarm_program__should_call_set_light_group_with_increased_bri_after_first_time_if_after_start_time(self, mock_api, mock_date, mock_time):
+        mock_date.datetime.now.return_value = datetime.datetime(2020, 11, 2, 7, 31, 0)
+        light_alarm_program(self.ALARM, self.API_KEY, self.GROUP_ID)
+        light_alarm_program(self.ALARM, self.API_KEY, self.GROUP_ID)
+
+        mock_api.assert_any_call(self.API_KEY, self.GROUP_ID, 4, hue=3016, sat=255)
 
     def test_light_alarm_program__should_call_set_light_group_if_equal_start_time(self, mock_api, mock_date, mock_time):
         mock_date.datetime.now.return_value = datetime.datetime(2020, 11, 2, 7, 30, 0)
         light_alarm_program(self.ALARM, self.API_KEY, self.GROUP_ID)
 
-        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, 4, hue=3008, sat=255)
+        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, 0, hue=3008, sat=255)
 
     def test_light_alarm_program__should_not_call_set_light_group_if_before_start_time(self, mock_api, mock_date, mock_time):
         mock_date.datetime.now.return_value = datetime.datetime(2020, 11, 2, 7, 29, 0)
@@ -57,7 +64,7 @@ class TestLightUtils:
         self.ALARM.BRIGHTNESS = 4
         light_alarm_program(self.ALARM, self.API_KEY, self.GROUP_ID)
 
-        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, 20, hue=3008, sat=255)
+        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, 16, hue=3008, sat=255)
 
     def test_light_alarm_program__should_max_out_brightness_at_255(self, mock_api, mock_date, mock_time):
         mock_date.datetime.now.return_value = self.MONDAY
@@ -79,7 +86,7 @@ class TestLightUtils:
         mock_date.datetime.now.return_value = self.MONDAY
         light_alarm_program(self.ALARM, self.API_KEY, self.GROUP_ID)
 
-        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, self.ALARM.BRIGHTNESS, temp=2700, trans=0)
+        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, self.ALARM.BRIGHTNESS, temp=2700, trans=4)
 
     def test_light_alarm_program__should_increment_brightness_when_greater_than_4100(self, mock_api, mock_date, mock_time):
         self.ALARM.HUE = 140
@@ -87,7 +94,7 @@ class TestLightUtils:
         mock_date.datetime.now.return_value = self.MONDAY
         light_alarm_program(self.ALARM, self.API_KEY, self.GROUP_ID)
 
-        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, 12, temp=2700, trans=0)
+        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, 12, temp=2700, trans=4)
 
     def test_light_alarm_program__should_increment_hue_when_between_4000_and_4100(self, mock_api, mock_date, mock_time):
         self.ALARM.HUE = 125
@@ -95,7 +102,7 @@ class TestLightUtils:
         mock_date.datetime.now.return_value = self.MONDAY
         light_alarm_program(self.ALARM, self.API_KEY, self.GROUP_ID)
 
-        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, 255, hue=(126 * 8) + 3000, sat=255)
+        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, 255, hue=(126 * 8) + 3000, sat=250, trans=4)
 
     def test_light_alarm_program__should_reset_brightness_when_between_4000_and_4100(self, mock_api, mock_date, mock_time):
         self.ALARM.HUE = 125
@@ -110,10 +117,8 @@ class TestLightUtils:
         self.ALARM.BRIGHTNESS = 10
         mock_date.datetime.now.return_value = self.MONDAY
         light_alarm_program(self.ALARM, self.API_KEY, self.GROUP_ID)
-        light_alarm_program(self.ALARM, self.API_KEY, self.GROUP_ID)
 
-        mock_api.assert_any_call(self.API_KEY, self.GROUP_ID, 255, hue=(126 * 8) + 3000, sat=255)
-        mock_api.assert_any_call(self.API_KEY, self.GROUP_ID, 255, hue=(127 * 8) + 3000, sat=250)
+        mock_api.assert_called_with(self.API_KEY, self.GROUP_ID, 255, hue=(126 * 8) + 3000, sat=250, trans=4)
 
     def test_light_alarm_program__should_not_call_set_light_group_when_sun(self, mock_api, mock_date, mock_time):
         mock_date.datetime.now.return_value = self.SUNDAY

@@ -11,23 +11,27 @@ def light_alarm_program(alarm_state, api_key, group_id):
     day_name = now.strftime('%a')
     within_alarm = __is_within_alarm(alarm_state, day_name, now)
     if within_alarm:
-        alarm_state.HUE += 1
-        hue = (alarm_state.HUE * 8) + 3000
-        if 4100 > hue > 4000:
-            set_light_groups(api_key, group_id, 255, hue=hue, sat=alarm_state.SATURATION)
-            alarm_state.SATURATION -= 5
-            alarm_state.BRIGHTNESS = 40
-        elif hue >= 4100:
-            alarm_state.BRIGHTNESS += 2
-            set_light_groups(api_key, group_id, alarm_state.BRIGHTNESS, temp=2700, trans=0)
-        else:
-            alarm_state.BRIGHTNESS += 1
-            update_bri = alarm_state.BRIGHTNESS * 4
-            set_light_groups(api_key, group_id, update_bri if update_bri < 255 else 255, hue=hue, sat=alarm_state.SATURATION)
+        __transition_from_red_to_white(alarm_state, api_key, group_id)
     elif not within_alarm and alarm_state.BRIGHTNESS != 0:
         alarm_state.HUE = 0
         alarm_state.BRIGHTNESS = 0
         alarm_state.SATURATION = 255
+
+
+def __transition_from_red_to_white(alarm_state, api_key, group_id):
+    alarm_state.HUE += 1
+    hue = (alarm_state.HUE * 8) + 3000
+    if 4100 > hue > 4000:
+        alarm_state.SATURATION -= 5
+        alarm_state.BRIGHTNESS = 40
+        set_light_groups(api_key, group_id, 255, hue=hue, sat=alarm_state.SATURATION, trans=4)
+    elif hue >= 4100:
+        alarm_state.BRIGHTNESS += 2
+        set_light_groups(api_key, group_id, alarm_state.BRIGHTNESS, temp=2700, trans=4)
+    else:
+        update_bri = alarm_state.BRIGHTNESS * 4
+        set_light_groups(api_key, group_id, update_bri if update_bri < 255 else 255, hue=hue, sat=alarm_state.SATURATION)
+        alarm_state.BRIGHTNESS += 1
 
 
 def __is_within_alarm(light_state, day_name, now):
@@ -41,7 +45,7 @@ def light_on_program(alarm_state, api_key, group_id):
     current_time = now.time()
     if __is_within_on_time(now.strftime('%a'), alarm_state, current_time, one_minute_after):
         logging.info(f'Api call to Turn on: {group_id} at {current_time} for Task Id: {alarm_state.THREAD_ID}')
-        set_light_groups(api_key, group_id, True, 255)
+        set_light_groups(api_key, group_id, 255)
         time.sleep(1)
         set_light_groups(api_key, group_id, 255)
         alarm_state.TRIGGERED = True
