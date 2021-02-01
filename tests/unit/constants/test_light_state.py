@@ -29,7 +29,7 @@ class TestLightState:
     def test_add_light_alarm__should_create_the_light_alarm_thread(self, mock_light, mock_api, mock_thread):
         self.STATE.add_light_alarm(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS, self.TASK_TYPE)
 
-        mock_thread.assert_called_with(mock.ANY, Automation.TIME.TEN_SECONDS)
+        mock_thread.assert_called_with(mock.ANY, Automation.TIME.SEVEN_SECONDS)
         mock_light.assert_called()
 
     @mock.patch('svc.constants.lights_state.LightOnOffState')
