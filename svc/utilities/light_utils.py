@@ -11,8 +11,10 @@ def light_alarm_program(alarm_state, api_key, group_id):
     day_name = now.strftime('%a')
     within_alarm = __is_within_alarm(alarm_state, day_name, now)
     if within_alarm:
+        logging.info(f'Running alarm on Day: {day_name} at Time: {now}')
         __transition_from_red_to_white(alarm_state, api_key, group_id)
     elif not within_alarm and alarm_state.BRIGHTNESS != 0:
+        logging.info('Resetting light alarm at end')
         alarm_state.HUE = 0
         alarm_state.BRIGHTNESS = 0
         alarm_state.SATURATION = 255
