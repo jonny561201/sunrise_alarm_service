@@ -1,3 +1,4 @@
+import logging
 from threading import Thread, Event
 
 from svc.constants.home_automation import Automation
@@ -11,8 +12,16 @@ class MyThread(Thread):
         self.interval = function_interval
 
     def run(self):
-        while not self.stopped.wait(self.interval):
-            self.function()
+        try:
+            while not self.stopped.wait(self.interval):
+                try:
+                    self.function()
+                except Exception as e:
+                    logging.error(f'Exception thrown invoking function')
+                    logging.error(e)
+        except Exception as e:
+            logging.error(f'Exception thrown during initial running of thread')
+            logging.error(e)
 
 
 # thread.stopped.set() will kill the process
