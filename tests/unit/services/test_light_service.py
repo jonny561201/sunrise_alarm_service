@@ -47,6 +47,12 @@ class TestLightService:
 
         mock_light.get_instance.return_value.add_light_alarm.assert_not_called()
 
+    def test_create_light_alarm__should_not_call_add_light_alarm_when_light_tasks_are_none(self, mock_tasks, mock_light):
+        mock_tasks.return_value = None
+        create_light_alarm()
+
+        mock_light.get_instance.return_value.add_light_alarm.assert_not_called()
+
     def test_create_light_alarm__should_not_call_add_replace_alarm_when_alarm_group_id_none(self, mock_tasks, mock_light):
         mock_tasks.return_value = [{'alarm_time': self.TIME, 'alarm_days': self.DAYS, 'alarm_light_group': None, 'task_id': self.TASK_ID}]
         create_light_alarm()

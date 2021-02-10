@@ -10,9 +10,10 @@ def create_light_alarm():
     try:
         light_state = LightState.get_instance()
         light_tasks = get_light_tasks_by_user(Settings.get_instance().user_id)
-        enabled_tasks = [task for task in light_tasks if task['enabled']]
-        __add_new_alarms(light_state, enabled_tasks)
-        __remove_cancelled_alarms(light_state, enabled_tasks)
+        if light_tasks is not None:
+            enabled_tasks = [task for task in light_tasks if task['enabled']]
+            __add_new_alarms(light_state, enabled_tasks)
+            __remove_cancelled_alarms(light_state, enabled_tasks)
     except Exception as er:
         logging.error(er)
 
