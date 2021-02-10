@@ -46,4 +46,4 @@ def get_light_tasks_by_user(user_id):
             task['alarm_time'] = None if task.get('alarm_time') is None else time.fromisoformat(task['alarm_time'])
         return light_response
     except Exception:
-        return []
+        return None

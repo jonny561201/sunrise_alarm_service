@@ -121,11 +121,11 @@ class TestLightApiRequests:
 
         assert actual == []
 
-    def test_get_light_tasks_by_user__should_return_empty_list_when_response_throws_exception(self, mock_requests):
+    def test_get_light_tasks_by_user__should_return_none_when_response_throws_exception(self, mock_requests):
         mock_requests.get.side_effect = TimeoutError()
         actual = get_light_tasks_by_user(self.USER_ID)
 
-        assert actual == []
+        assert actual is None
 
     @staticmethod
     def __create_response(status=200, data=None):
