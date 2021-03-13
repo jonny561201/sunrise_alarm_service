@@ -19,7 +19,6 @@ class TestLightService:
     TASK_ID = str(uuid.uuid4())
 
     def setup_method(self):
-        self.ALARM = LightAlarmState(self.TASK_ID, self.TIME, self.DAYS)
         self.SETTINGS = Settings.get_instance()
         self.SETTINGS.dev_mode = True
         self.SETTINGS.settings = {'UserId': self.USER_ID}
