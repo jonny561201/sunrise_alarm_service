@@ -45,7 +45,7 @@ def light_on_program(alarm_state, api_key, group_id):
     now = datetime.datetime.now()
     one_minute_after = (datetime.datetime.combine(datetime.date.today(), alarm_state.ALARM_START_TIME) + datetime.timedelta(minutes=1)).time()
     current_time = now.time()
-    if __is_within_on_time(now.strftime('%a'), alarm_state, current_time, one_minute_after):
+    if __is_within_start_time(now.strftime('%a'), alarm_state, current_time, one_minute_after):
         logging.info(f'Api call to Turn on: {group_id} at {current_time} for Task Id: {alarm_state.THREAD_ID}')
         set_light_groups(api_key, group_id, 255)
         time.sleep(1)
@@ -59,7 +59,7 @@ def light_off_program(alarm_state, api_key, group_id):
     now = datetime.datetime.now()
     current_time = now.time()
     one_minute_after = (datetime.datetime.combine(datetime.date.today(), alarm_state.ALARM_START_TIME) + datetime.timedelta(minutes=1)).time()
-    if __is_within_on_time(now.strftime('%a'), alarm_state, current_time, one_minute_after):
+    if __is_within_start_time(now.strftime('%a'), alarm_state, current_time, one_minute_after):
         logging.info(f'Api call to Turn off: {group_id} at {current_time} for Task Id: {alarm_state.THREAD_ID}')
         set_light_groups(api_key, group_id, 0)
         time.sleep(1)
@@ -69,7 +69,7 @@ def light_off_program(alarm_state, api_key, group_id):
         alarm_state.TRIGGERED = False
 
 
-def __is_within_on_time(day_name, alarm_state, current_time, one_minute_after):
+def __is_within_start_time(day_name, alarm_state, current_time, one_minute_after):
     return day_name in alarm_state.ALARM_DAYS \
            and current_time >= alarm_state.ALARM_START_TIME \
            and not alarm_state.TRIGGERED \
