@@ -1,7 +1,6 @@
 import base64
-import logging
-from datetime import time
 import json
+from datetime import time
 
 import requests
 
@@ -34,7 +33,7 @@ def set_light_groups(api_key, group_id, brightness, hue=None, temp=None, sat=255
     try:
         requests.put(url, data=json.dumps(request))
     except Exception:
-        logging.error('Set Light Groups Put request threw an exception')
+        pass
 
 
 def get_light_tasks_by_user(user_id):

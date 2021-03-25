@@ -1,5 +1,3 @@
-import logging
-
 from svc.constants.home_automation import Automation
 from svc.constants.settings_state import Settings
 from svc.constants.thread_state import LightAlarmState, LightOnOffState
@@ -21,7 +19,6 @@ class LightState:
 
     def add_light_alarm(self, task_id, light_group_id, alarm_time, alarm_days, task_type):
         if not any(alarm.THREAD_ID == task_id for alarm in self.LIGHT_ALARMS):
-            logging.info(f'-----added new light alarm id: {task_id}-----')
             if task_type == Automation.LIGHT.SUNRISE:
                 alarm = LightAlarmState(task_id, alarm_time, alarm_days)
                 alarm.ACTIVE_THREAD = create_thread(lambda: light_alarm_program(alarm, self.get_light_api_key(), light_group_id), Automation.TIME.SEVEN_SECONDS)
@@ -41,7 +38,6 @@ class LightState:
     def remove_light_alarm(self, task_id):
         index = next((i for i, x in enumerate(self.LIGHT_ALARMS) if x.THREAD_ID == task_id), None)
         if index is not None:
-            logging.info(f'-----removed light alarm id: {task_id}-----')
             existing_alarm = self.LIGHT_ALARMS.pop(index)
             existing_alarm.ACTIVE_THREAD.stopped.set()
 

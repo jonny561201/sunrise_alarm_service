@@ -1,5 +1,4 @@
 import datetime
-import logging
 import time
 
 from svc.utilities.api_utils import set_light_groups
@@ -11,10 +10,8 @@ def light_alarm_program(alarm_state, api_key, group_id):
     day_name = now.strftime('%a')
     within_alarm = __is_within_alarm(alarm_state, day_name, now)
     if within_alarm:
-        logging.info(f'Running alarm on Day: {day_name} at Time: {now}')
         __transition_from_red_to_white(alarm_state, api_key, group_id)
     elif not within_alarm and alarm_state.BRIGHTNESS != 0:
-        logging.info('Resetting light alarm at end')
         alarm_state.HUE = 0
         alarm_state.BRIGHTNESS = 0
         alarm_state.SATURATION = 255
@@ -46,7 +43,6 @@ def light_on_program(alarm_state, api_key, group_id):
     one_minute_after = (datetime.datetime.combine(datetime.date.today(), alarm_state.ALARM_START_TIME) + datetime.timedelta(minutes=1)).time()
     current_time = now.time()
     if __is_within_start_time(now.strftime('%a'), alarm_state, current_time, one_minute_after):
-        logging.info(f'Api call to Turn on: {group_id} at {current_time} for Task Id: {alarm_state.THREAD_ID}')
         set_light_groups(api_key, group_id, 255)
         time.sleep(1)
         set_light_groups(api_key, group_id, 255)
@@ -60,7 +56,6 @@ def light_off_program(alarm_state, api_key, group_id):
     current_time = now.time()
     one_minute_after = (datetime.datetime.combine(datetime.date.today(), alarm_state.ALARM_START_TIME) + datetime.timedelta(minutes=1)).time()
     if __is_within_start_time(now.strftime('%a'), alarm_state, current_time, one_minute_after):
-        logging.info(f'Api call to Turn off: {group_id} at {current_time} for Task Id: {alarm_state.THREAD_ID}')
         set_light_groups(api_key, group_id, 0)
         time.sleep(1)
         set_light_groups(api_key, group_id, 0)
