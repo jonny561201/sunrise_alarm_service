@@ -24,7 +24,7 @@ function startVirtualEnv {
       echo -e "${YELLOW}----------Creating VirtualEnv----------${WHITE}"
       pushd "/home/pi/sunrise_alarm_service"
       sudo pip3 install virtualenv
-      sudo virtualenv venv
+      python3 -m virtualenv venv
       popd
     fi
       echo -e "${YELLOW}---------------starting VirtualEnv---------------${WHITE}"
