@@ -17,6 +17,7 @@ class Garage:
 
 
 class Time:
+    TWO_SECONDS = 2.3
     FIVE_SECONDS = 5
     SEVEN_SECONDS = 7
     TEN_SECONDS = 10
