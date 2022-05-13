@@ -17,20 +17,23 @@ class LightState:
         else:
             LightState.__instance = self
 
-    def add_light_alarm(self, task_id, light_group_id, alarm_time, alarm_days, task_type):
+    def add_light_alarm(self, task):
+        task_id = task['task_id']
+        task_type = task['task_type']
         if not any(alarm.THREAD_ID == task_id for alarm in self.LIGHT_ALARMS):
+            light_group_id = task['alarm_light_group']
             if task_type == Automation.LIGHT.SUNRISE:
-                alarm = LightAlarmState(task_id, alarm_time, alarm_days)
+                alarm = LightAlarmState(task_id, task['alarm_time'], task['alarm_days'])
                 alarm.ACTIVE_THREAD = create_thread(lambda: light_alarm_program(alarm, self.get_light_api_key(), light_group_id), Automation.TIME.SEVEN_SECONDS)
                 alarm.ACTIVE_THREAD.start()
                 self.LIGHT_ALARMS.append(alarm)
             elif task_type == Automation.LIGHT.TURN_ON:
-                alarm = LightOnOffState(task_id, alarm_time, alarm_days)
+                alarm = LightOnOffState(task_id, task['alarm_time'], task['alarm_days'])
                 alarm.ACTIVE_THREAD = create_thread(lambda: light_on_program(alarm, self.get_light_api_key(), light_group_id), Automation.TIME.TEN_SECONDS)
                 alarm.ACTIVE_THREAD.start()
                 self.LIGHT_ALARMS.append(alarm)
             elif task_type == Automation.LIGHT.TURN_OFF:
-                alarm = LightOnOffState(task_id, alarm_time, alarm_days)
+                alarm = LightOnOffState(task_id, task['alarm_time'], task['alarm_days'])
                 alarm.ACTIVE_THREAD = create_thread(lambda: light_off_program(alarm, self.get_light_api_key(), light_group_id), Automation.TIME.TEN_SECONDS)
                 alarm.ACTIVE_THREAD.start()
                 self.LIGHT_ALARMS.append(alarm)

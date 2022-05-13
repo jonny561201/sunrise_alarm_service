@@ -21,78 +21,86 @@ class TestLightState:
     TIME = datetime.time.fromisoformat('00:00:01')
 
     def setup_method(self):
+        self.TASK = {'task_id': self.TASK_ID, 'task_type': self.TASK_TYPE, 'alarm_days': self.DAYS,
+                     'alarm_time': self.TIME, 'alarm_light_group': self.GROUP_ID}
         self.SETTINGS = Settings.get_instance()
         self.STATE = LightState.get_instance()
         self.STATE.LIGHT_ALARMS = []
 
     @mock.patch('svc.constants.lights_state.LightAlarmState')
     def test_add_light_alarm__should_create_the_light_alarm_thread(self, mock_light, mock_api, mock_thread):
-        self.STATE.add_light_alarm(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS, self.TASK_TYPE)
+        self.STATE.add_light_alarm(self.TASK)
 
         mock_thread.assert_called_with(mock.ANY, Automation.TIME.SEVEN_SECONDS)
         mock_light.assert_called()
 
     @mock.patch('svc.constants.lights_state.LightOnOffState')
     def test_add_light_alarm__should_create_the_light_thread_for_turn_on(self, mock_light, mock_api, mock_thread):
-        self.STATE.add_light_alarm(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS, 'turn on')
+        self.TASK['task_type'] = 'turn on'
+        self.STATE.add_light_alarm(self.TASK)
 
         mock_thread.assert_called_with(mock.ANY, Automation.TIME.TEN_SECONDS)
         mock_light.assert_called()
 
     def test_add_light_alarm__should_store_the_thread_on_the_alarm_list_for_turn_on(self, mock_api, mock_thread):
-        self.STATE.add_light_alarm(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS, 'turn on')
+        self.TASK['task_type'] = 'turn on'
+        self.STATE.add_light_alarm(self.TASK)
 
         assert len(self.STATE.LIGHT_ALARMS) == 1
 
     def test_add_light_alarm__should_start_the_newly_created_thread_for_turn_on(self, mock_api, mock_thread):
         mock_alarm = mock.create_autospec(MyThread)
         mock_thread.return_value = mock_alarm
-        self.STATE.add_light_alarm(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS, 'turn on')
+        self.TASK['task_type'] = 'turn on'
+        self.STATE.add_light_alarm(self.TASK)
 
         mock_alarm.start.assert_called()
 
     @mock.patch('svc.constants.lights_state.LightOnOffState')
     def test_add_light_alarm__should_create_the_light_thread_for_turn_off(self, mock_light, mock_api, mock_thread):
-        self.STATE.add_light_alarm(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS, 'turn off')
+        self.TASK['task_type'] = 'turn off'
+        self.STATE.add_light_alarm(self.TASK)
 
         mock_thread.assert_called_with(mock.ANY, Automation.TIME.TEN_SECONDS)
         mock_light.assert_called()
 
     def test_add_light_alarm__should_store_the_thread_on_the_alarm_list_for_turn_off(self, mock_api, mock_thread):
-        self.STATE.add_light_alarm(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS, 'turn off')
+        self.TASK['task_type'] = 'turn off'
+        self.STATE.add_light_alarm(self.TASK)
 
         assert len(self.STATE.LIGHT_ALARMS) == 1
 
     def test_add_light_alarm__should_start_the_newly_created_thread_for_turn_off(self, mock_api, mock_thread):
         mock_alarm = mock.create_autospec(MyThread)
         mock_thread.return_value = mock_alarm
-        self.STATE.add_light_alarm(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS, 'turn off')
+        self.TASK['task_type'] = 'turn off'
+        self.STATE.add_light_alarm(self.TASK)
 
         mock_alarm.start.assert_called()
 
     def test_add_light_alarm__should_not_create_thread_when_it_already_exists(self, mock_api, mock_thread):
         alarm = LightAlarmState(self.TASK_ID, self.TIME, self.DAYS)
         self.STATE.LIGHT_ALARMS.append(alarm)
-        self.STATE.add_light_alarm(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS, self.TASK_TYPE)
+        self.STATE.add_light_alarm(self.TASK)
 
         mock_thread.assert_not_called()
 
     def test_add_light_alarm__should_create_thread_when_other_non_matching_threads(self, mock_api, mock_thread):
         alarm = LightAlarmState(str(uuid.uuid4()), self.TIME, self.DAYS)
         self.STATE.LIGHT_ALARMS.append(alarm)
-        self.STATE.add_light_alarm(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS, self.TASK_TYPE)
+        self.STATE.add_light_alarm(self.TASK)
 
         mock_thread.assert_called()
 
     def test_add_light_alarm__should_store_the_thread_on_the_alarm_list_for_sunrise(self, mock_api, mock_thread):
-        self.STATE.add_light_alarm(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS, self.TASK_TYPE)
+        self.STATE.add_light_alarm(self.TASK)
 
         assert len(self.STATE.LIGHT_ALARMS) == 1
 
     def test_add_light_alarm__should_start_the_newly_created_thread(self, mock_api, mock_thread):
         mock_alarm = mock.create_autospec(MyThread)
         mock_thread.return_value = mock_alarm
-        self.STATE.add_light_alarm(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS, self.TASK_TYPE)
+        self.STATE.add_light_alarm(self.TASK)
 
         mock_alarm.start.assert_called()
 
