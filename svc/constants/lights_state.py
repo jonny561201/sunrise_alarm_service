@@ -24,7 +24,7 @@ class LightState:
             light_group_id = task['alarm_light_group']
             if task_type == Automation.LIGHT.SUNRISE:
                 alarm = LightAlarmState(task_id, task['alarm_time'], task['alarm_days'])
-                alarm.ACTIVE_THREAD = create_thread(lambda: light_alarm_program(alarm, self.get_light_api_key(), light_group_id), Automation.TIME.SEVEN_SECONDS)
+                alarm.ACTIVE_THREAD = create_thread(lambda: light_alarm_program(alarm, self.get_light_api_key(), light_group_id), Automation.TIME.TWO_SECONDS)
                 alarm.ACTIVE_THREAD.start()
                 self.LIGHT_ALARMS.append(alarm)
             elif task_type == Automation.LIGHT.TURN_ON:
