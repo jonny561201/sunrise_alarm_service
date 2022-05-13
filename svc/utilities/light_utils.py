@@ -12,9 +12,13 @@ def light_alarm_program(alarm_state, api_key, group_id):
     if within_alarm:
         __transition_from_red_to_white(alarm_state, api_key, group_id)
     elif not within_alarm and alarm_state.BRIGHTNESS != 0:
-        alarm_state.HUE = 0
-        alarm_state.BRIGHTNESS = 0
-        alarm_state.SATURATION = 255
+        __reset_light(alarm_state)
+
+
+def __reset_light(alarm_state):
+    alarm_state.HUE = 0
+    alarm_state.BRIGHTNESS = 0
+    alarm_state.SATURATION = 255
 
 
 def __transition_from_red_to_white(alarm_state, api_key, group_id):
