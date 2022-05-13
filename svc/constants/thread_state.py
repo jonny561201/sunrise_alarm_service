@@ -17,8 +17,10 @@ class LightAlarmState(ThreadState):
     def __init__(self, task_id: str, alarm_time: datetime.time, alarm_days: str):
         self.THREAD_ID = task_id
         self.ALARM_DAYS = alarm_days
-        self.ALARM_START_TIME = (datetime.datetime.combine(datetime.date.today(), alarm_time) + datetime.timedelta(minutes=-25)).time()
-        self.ALARM_STOP_TIME = (datetime.datetime.combine(datetime.date.today(), alarm_time) + datetime.timedelta(minutes=+5)).time()
+        eight_minutes_prior = (datetime.datetime.combine(datetime.date.today(), alarm_time) + datetime.timedelta(minutes=-8)).time()
+        two_minutes_after = (datetime.datetime.combine(datetime.date.today(), alarm_time) + datetime.timedelta(minutes=+2)).time()
+        self.ALARM_START_TIME = eight_minutes_prior
+        self.ALARM_STOP_TIME = two_minutes_after
 
 
 class LightOnOffState(ThreadState):
