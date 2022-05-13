@@ -63,7 +63,7 @@ class TestLightService:
         mock_tasks.return_value = [light_pref]
         create_light_alarm()
 
-        mock_light.get_instance.return_value.add_light_alarm.assert_called_with(self.TASK_ID, self.GROUP_ID, self.TIME, self.DAYS, self.TASK_TYPE)
+        mock_light.get_instance.return_value.add_light_alarm.assert_called_with(light_pref)
 
     def test_create_light_alarm__should_call_remove_light_on_items_missing_from_api_response(self, mock_tasks, mock_light):
         other_task = str(uuid.uuid4())
